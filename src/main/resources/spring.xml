@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/util
+       http://www.springframework.org/schema/util/spring-util.xsd"
+        >
+
+       <bean id="yahooData" class="SimpleBlog.plugin.YahooWeatherData">
+              <property name="woeid" value="12697644" />
+       </bean>
+
+       <bean id="convertToEvernote" class="SimpleBlog.plugin.ConvertToEvernote">
+              <property name="templatePath" value="classpath:EvernoteExportTemplate.xml" />
+              <property name="enexPath" value="./" />
+       </bean>
+
+       <bean id="mailToEvernote" class="SimpleBlog.plugin.MailToEvernote">
+              <property name="host" value="smtp.163.com" />
+              <property name="port" value="465" />
+              <property name="mailbox" value="liuhao_note.1e6ce@m.evernote.com" />
+              <property name="username" value="toevernote@163.com" />
+              <property name="password" value="Frontier.123" />
+       </bean>
+
+       <bean id="app" class="SimpleBlog.App" />
+
+</beans>
