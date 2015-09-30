@@ -9,7 +9,25 @@ public class Blog {
     private String create;
     private String update;
     private String author;
-    private String tag;
+    private String tags;
+    private String source;
+    private String sourceUrl;
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
+    }
+
+    public String getSourceUrl() {
+        return sourceUrl;
+    }
+
+    public void setSourceUrl(String sourceUrl) {
+        this.sourceUrl = sourceUrl;
+    }
 
     public String getSubject() {
         return subject;
@@ -51,11 +69,11 @@ public class Blog {
         this.author = author;
     }
 
-    public String getTag() {
-        return tag;
+    public String getTags() {
+        return tags;
     }
 
-    public void setTag(String tag) {
-        this.tag = tag;
+    public void setTags(String tags) {
+        this.tags = tags;
     }
 }

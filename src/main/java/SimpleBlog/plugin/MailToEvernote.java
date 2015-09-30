@@ -63,7 +63,7 @@ public class MailToEvernote {
             Message message = new MimeMessage(session);
             message.setFrom(new InternetAddress(username));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mailbox));
-            message.setSubject(blog.getSubject() + " " + blog.getTag());
+            message.setSubject(blog.getSubject() + " " + blog.getTags());
             message.setText(blog.getContent());
             Transport.send(message);
         } catch (MessagingException e) {

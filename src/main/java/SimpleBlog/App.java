@@ -3,6 +3,7 @@ package SimpleBlog;
 import SimpleBlog.entity.Blog;
 import SimpleBlog.plugin.ConvertToEvernote;
 import SimpleBlog.plugin.DateUtil;
+import SimpleBlog.plugin.ImportTumblrPostData;
 import SimpleBlog.plugin.YahooWeatherData;
 import org.dom4j.io.XMLWriter;
 import org.springframework.context.ApplicationContext;
@@ -20,21 +21,22 @@ public class App {
 
         ConvertToEvernote cte = (ConvertToEvernote)context.getBean("convertToEvernote");
         YahooWeatherData data = (YahooWeatherData)context.getBean("yahooData");
-        DateUtil date = new DateUtil();
+        ImportTumblrPostData importTumblr = (ImportTumblrPostData)context.getBean("importTumblrPostData");
+        DateUtil date = (DateUtil)context.getBean("dateUtil");
         Blog blog = new Blog();
 
         blog.setAuthor("Hao Liu");
         blog.setSubject(date.getTextDate() + " " + data.getWeather() + " " + data.getLocation());
         blog.setCreate(date.getEvernoteDate());
         blog.setUpdate(date.getEvernoteDate());
-        blog.setTag("@2015 Diary");
+        blog.setTags("@2015 Diary");
 
-        XMLWriter writer = new XMLWriter(new OutputStreamWriter(System.out, "UTF-8"));
-        System.out.println("/r/n------------------Start------------------");
-        writer.write(cte.exportEvernoteXml(blog));
-        System.out.println("/r/n-------------------End-------------------");
-        writer.close();
+        //XMLWriter writer = new XMLWriter(new OutputStreamWriter(System.out, "UTF-8"));
+        //writer.write(cte.exportEvernoteXml(blog));
+        //writer.close();
 
         cte.createEnex(blog);
+
+        importTumblr.getXmlDocument();
     }
 }

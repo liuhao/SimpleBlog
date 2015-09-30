@@ -21,4 +21,9 @@ public class DateUtil {
                 String.valueOf(c.get(Calendar.MINUTE)) +
                 String.valueOf(c.get(Calendar.SECOND)) + "Z";
     }
+
+    public String converTumblrDate(String date) {
+        java.util.Calendar c = java.util.Calendar.getInstance();
+        return date;
+    }
 }

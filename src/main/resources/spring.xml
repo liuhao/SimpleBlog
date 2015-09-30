@@ -6,6 +6,8 @@
        http://www.springframework.org/schema/util
        http://www.springframework.org/schema/util/spring-util.xsd">
 
+       <bean id="dateUtil" class="SimpleBlog.plugin.DateUtil" />
+
        <bean id="yahooData" class="SimpleBlog.plugin.YahooWeatherData">
               <property name="woeid" value="12697644" />
        </bean>
@@ -21,6 +23,17 @@
               <property name="mailbox" value="liuhao_note.1e6ce@m.evernote.com" />
               <property name="username" value="toevernote@163.com" />
               <property name="password" value="Frontier.123" />
+       </bean>
+
+       <bean id="importTumblrPostData" class="SimpleBlog.plugin.ImportTumblrPostData">
+              <property name="albumXPath" value="div#header > h1 > a" />
+              <property name="postsXPath" value="div.post" />
+              <property name="sourceUrlXPath" value="li.permalink > a" />
+              <property name="tagsXPath" value="p.tags" />
+              <property name="contentXPath" value="div.go" />
+              <property name="subjectXPath" value="h3 > a" />
+              <property name="dateXPath" value="h2" />
+              <property name="dateUtil" ref="dateUtil" />
        </bean>
 
        <bean id="app" class="SimpleBlog.App" />
