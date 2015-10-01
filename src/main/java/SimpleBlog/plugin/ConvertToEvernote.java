@@ -22,6 +22,10 @@ public class ConvertToEvernote {
     private static Logger logger = LogManager.getLogger(ConvertToEvernote.class.getName());
     private Resource templatePath;
     private String enexPath;
+    private enum CreateType {
+        UPDATE,
+        CREATE
+    }
 
     public void setEnexPath(String enexPath) {
         this.enexPath = enexPath;
@@ -31,10 +35,15 @@ public class ConvertToEvernote {
         this.templatePath = templatePath;
     }
 
-    public Document exportEvernoteXml(List<Blog> blogs) {
+    public Document exportEvernoteXml(List<Blog> blogs, CreateType type) {
         try {
             SAXReader saxReader = new SAXReader();
-            Document document = saxReader.read(templatePath.getInputStream()); // 读取XML文件,获得document对象
+            Document document;
+            if (type == CreateType.CREATE) {
+                document = saxReader.read(templatePath.getInputStream()); // 读取XML文件,获得document对象
+            } else {
+                document = saxReader.read(enexPath);
+            }
             if (document == null) {
                 logger.error("fail to get XML Document");
             } else {
@@ -47,7 +56,9 @@ public class ConvertToEvernote {
                     exportElm.addAttribute("export-date", dateUtil.getEvernoteDate());
                 }
                 Element noteTemplate = exportElm.element("note").createCopy();
-                exportElm.remove(exportElm.element("note"));
+                if(type == CreateType.CREATE) {
+                    exportElm.remove(exportElm.element("note"));
+                }
 
                 for (Blog blog : blogs) {
                     Element note = noteTemplate.createCopy();
@@ -85,9 +96,19 @@ public class ConvertToEvernote {
     public void createEnex(List<Blog> blogs) {
         XMLWriter writer;
         try {
-            writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(
-                    enexPath + "/" + "NewExport.enex"), "UTF-8"));
-            writer.write(exportEvernoteXml(blogs)); //输出到文件
+            writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), "UTF-8"));
+            writer.write(exportEvernoteXml(blogs, CreateType.CREATE)); //输出到文件
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void updateEnex(List<Blog> blogs) {
+        XMLWriter writer;
+        try {
+            writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), "UTF-8"));
+            writer.write(exportEvernoteXml(blogs, CreateType.UPDATE)); // update file到文件
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
