@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hello world!
@@ -31,12 +33,23 @@ public class App {
         blog.setUpdate(date.getEvernoteDate());
         blog.setTags("@2015 Diary");
 
+        Blog blog1 = new Blog();
+
+        blog1.setAuthor("Hao Liu");
+        blog1.setSubject(date.getTextDate() + " " + data.getWeather() + " " + data.getLocation());
+        blog1.setCreate(date.getEvernoteDate());
+        blog1.setUpdate(date.getEvernoteDate());
+        blog1.setTags("@2015 Diary");
+
         //XMLWriter writer = new XMLWriter(new OutputStreamWriter(System.out, "UTF-8"));
         //writer.write(cte.exportEvernoteXml(blog));
         //writer.close();
+        List<Blog> blogs = new ArrayList<Blog>();
+        blogs.add(blog);
+        blogs.add(blog1);
+        cte.createEnex(blogs);
 
-        cte.createEnex(blog);
-
-        importTumblr.getXmlDocument();
+        //importTumblr.getXmlDocument();
+        System.out.print(date.converTumblrDate("3rd August 2012"));
     }
 }

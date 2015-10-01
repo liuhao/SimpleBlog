@@ -6,12 +6,14 @@ import org.apache.logging.log4j.Logger;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.Element;
+import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * Created by lyoo on 9/25/2015.
@@ -29,7 +31,7 @@ public class ConvertToEvernote {
         this.templatePath = templatePath;
     }
 
-    public Document exportEvernoteXml(Blog blog) {
+    public Document exportEvernoteXml(List<Blog> blogs) {
         try {
             SAXReader saxReader = new SAXReader();
             Document document = saxReader.read(templatePath.getInputStream()); // 读取XML文件,获得document对象
@@ -37,31 +39,39 @@ public class ConvertToEvernote {
                 logger.error("fail to get XML Document");
             } else {
                 Element exportElm = document.getRootElement();
+
                 if (exportElm == null) {
                     logger.error("the en-export element is not exist!");
                 } else {
-                    exportElm.addAttribute("export-date", blog.getCreate());
+                    DateUtil dateUtil = new DateUtil();
+                    exportElm.addAttribute("export-date", dateUtil.getEvernoteDate());
                 }
+                Element noteTemplate = exportElm.element("note").createCopy();
+                exportElm.remove(exportElm.element("note"));
 
-                Element titleElm = document.getRootElement().element("note").element("title");
-                if (exportElm == null) {
-                    logger.error("the title element is not exist!");
-                } else {
-                    titleElm.setText(blog.getSubject());
-                }
+                for (Blog blog : blogs) {
+                    Element note = noteTemplate.createCopy();
+                    Element titleElm = note.element("title");
+                    if (titleElm == null) {
+                        logger.error("the title element is not exist!");
+                    } else {
+                        titleElm.setText(blog.getSubject());
+                    }
 
-                Element createdElm = document.getRootElement().element("note").element("created");
-                if (exportElm == null) {
-                    logger.error("the created element is not exist!");
-                } else {
-                    createdElm.setText(blog.getCreate());
-                }
+                    Element createdElm = note.element("created");
+                    if (createdElm == null) {
+                        logger.error("the created element is not exist!");
+                    } else {
+                        createdElm.setText(blog.getCreate());
+                    }
 
-                Element updatedElm = document.getRootElement().element("note").element("updated");
-                if (exportElm == null) {
-                    logger.error("the updated element is not exist!");
-                } else {
-                    updatedElm.setText(blog.getUpdate());
+                    Element updatedElm = note.element("updated");
+                    if (updatedElm == null) {
+                        logger.error("the updated element is not exist!");
+                    } else {
+                        updatedElm.setText(blog.getUpdate());
+                    }
+                    exportElm.add(note);
                 }
                 return document;
             }
@@ -72,12 +82,12 @@ public class ConvertToEvernote {
         return null;
     }
 
-    public void createEnex(Blog blog) {
+    public void createEnex(List<Blog> blogs) {
         XMLWriter writer;
         try {
             writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(
-                    enexPath + "/" + blog.getCreate() + ".enex"), "UTF-8"));
-            writer.write(exportEvernoteXml(blog)); //输出到文件
+                    enexPath + "/" + "NewExport.enex"), "UTF-8"));
+            writer.write(exportEvernoteXml(blogs)); //输出到文件
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
