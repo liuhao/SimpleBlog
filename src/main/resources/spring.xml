@@ -14,7 +14,7 @@
 
        <bean id="convertToEvernote" class="SimpleBlog.plugin.ConvertToEvernote">
               <property name="templatePath" value="classpath:EvernoteExportTemplate.xml" />
-              <property name="enexPath" value="./NewExport.enex" />
+              <property name="enexPath" value="NewExport.enex" />
        </bean>
 
        <bean id="mailToEvernote" class="SimpleBlog.plugin.MailToEvernote">

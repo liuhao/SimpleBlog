@@ -21,10 +21,10 @@ public class App {
         ApplicationContext context;
         context = new ClassPathXmlApplicationContext("spring.xml");
 
-        ConvertToEvernote cte = (ConvertToEvernote)context.getBean("convertToEvernote");
-        YahooWeatherData data = (YahooWeatherData)context.getBean("yahooData");
-        ImportTumblrPostData importTumblr = (ImportTumblrPostData)context.getBean("importTumblrPostData");
-        DateUtil date = (DateUtil)context.getBean("dateUtil");
+        ConvertToEvernote cte = (ConvertToEvernote) context.getBean("convertToEvernote");
+        YahooWeatherData data = (YahooWeatherData) context.getBean("yahooData");
+        ImportTumblrPostData importTumblr = (ImportTumblrPostData) context.getBean("importTumblrPostData");
+        DateUtil date = (DateUtil) context.getBean("dateUtil");
         Blog blog = new Blog();
 
         blog.setAuthor("Hao Liu");
@@ -44,12 +44,18 @@ public class App {
         //XMLWriter writer = new XMLWriter(new OutputStreamWriter(System.out, "UTF-8"));
         //writer.write(cte.exportEvernoteXml(blog));
         //writer.close();
+       /*
         List<Blog> blogs = new ArrayList<Blog>();
         blogs.add(blog);
         blogs.add(blog1);
-        cte.createEnex(blogs);
 
-        //importTumblr.getXmlDocument();
-        System.out.print(date.converTumblrDate("3rd August 2012"));
+        if (new File("./NewExport.enex").exists())
+            cte.updateEnex(blogs);
+        else
+            cte.createEnex(blogs);
+*/
+
+        cte.createEnex(importTumblr.getXmlDocument());
+        System.out.print(date.converTumblrDate("20th December 2013"));
     }
 }

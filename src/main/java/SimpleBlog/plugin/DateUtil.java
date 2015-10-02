@@ -25,8 +25,10 @@ public class DateUtil {
     }
 
     public String converTumblrDate(String date) {
+        if (date.isEmpty())
+            return "";
         Calendar c = Calendar.getInstance();
-        String dateString = date.replaceFirst("(^[1-9]+)[a-zA-Z]+ ", "$1 ");
+        String dateString = date.replaceFirst("(^[0-9]+)[a-zA-Z]+ ", "$1 ");
         SimpleDateFormat sdf = new SimpleDateFormat("d MMMM yyyy");
         try {
             c.setTime(sdf.parse(dateString));
