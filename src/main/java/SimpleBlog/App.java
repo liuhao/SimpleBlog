@@ -29,6 +29,7 @@ public class App {
 
         blog.setAuthor("Hao Liu");
         blog.setSubject(date.getTextDate() + " " + data.getWeather() + " " + data.getLocation());
+        blog.setContent("What a wondful day. 美好的一天。");
         blog.setCreate(date.getEvernoteDate());
         blog.setUpdate(date.getEvernoteDate());
         blog.setTags("@2015 Diary");
@@ -37,6 +38,7 @@ public class App {
 
         blog1.setAuthor("Hao Liu");
         blog1.setSubject(date.getTextDate() + " " + data.getWeather() + " " + data.getLocation());
+        blog1.setContent("What a wondful day. 美好的一天。");
         blog1.setCreate(date.getEvernoteDate());
         blog1.setUpdate(date.getEvernoteDate());
         blog1.setTags("@2015 Diary");
@@ -44,18 +46,21 @@ public class App {
         //XMLWriter writer = new XMLWriter(new OutputStreamWriter(System.out, "UTF-8"));
         //writer.write(cte.exportEvernoteXml(blog));
         //writer.close();
-       /*
+
         List<Blog> blogs = new ArrayList<Blog>();
         blogs.add(blog);
         blogs.add(blog1);
 
         if (new File("./NewExport.enex").exists())
-            cte.updateEnex(blogs);
+            cte.updateEnex(blogs, "NewExport.enex");
         else
-            cte.createEnex(blogs);
-*/
+            cte.createEnex(blogs, "NewExport.enex");
 
-        cte.createEnex(importTumblr.getXmlDocument());
-        System.out.print(date.converTumblrDate("20th December 2013"));
+
+        String tumblrUrl = "http://liuhao2012.tumblr.com/page/";
+        for (int i = 1; i < 75; i++) {
+            cte.updateEnex(importTumblr.getXmlDocument(tumblrUrl + String.valueOf(i)),
+                "TumblrPostExport.enex");
+        }
     }
 }

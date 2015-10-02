@@ -69,12 +69,13 @@ public class ImportTumblrPostData {
         this.dateUtil = dateUtil;
     }
 
-    public List<Blog> getXmlDocument() {
-        String url = TUMBLR_POST_DATA_GET_URL;
+    public List<Blog> getXmlDocument(String tumblrUrl) {
+        if(tumblrUrl.isEmpty())
+            tumblrUrl = TUMBLR_POST_DATA_GET_URL;
 
         try {
             List<Blog> blogs = new ArrayList<Blog>();
-            Document doc = Jsoup.connect(url).get();
+            Document doc = Jsoup.connect(tumblrUrl).get();
             Elements posts = doc.select(postsXPath);
             String albumName = doc.select(albumXPath).text();
 
@@ -82,13 +83,15 @@ public class ImportTumblrPostData {
                 String tempDate = "";
                 for (Element p : posts) {
                     Blog blog = parsePost(p);
-                    if (blog.getCreate().isEmpty()) {
-                        blog.setCreate(tempDate);
-                        blog.setUpdate(tempDate);
-                    } else {
-                        tempDate = blog.getCreate();
+                    if(blog != null) {
+                        if (blog.getCreate().isEmpty()) {
+                            blog.setCreate(tempDate);
+                            blog.setUpdate(tempDate);
+                        } else {
+                            tempDate = blog.getCreate();
+                        }
+                        blogs.add(blog);
                     }
-                    blogs.add(blog);
                 }
             }
             return blogs;
@@ -111,6 +114,10 @@ public class ImportTumblrPostData {
         blog.setSourceUrl(post.select(sourceUrlXPath).attr("href"));
         blog.setTags(post.select(tagsXPath).text());
         blog.setAuthor("Hao Liu");
-        return blog;
+
+        if (blog.getSubject().isEmpty())
+            return null;
+        else
+            return blog;
     }
 }

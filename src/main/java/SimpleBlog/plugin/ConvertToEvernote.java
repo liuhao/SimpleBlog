@@ -21,23 +21,21 @@ import java.util.List;
 public class ConvertToEvernote {
     private static Logger logger = LogManager.getLogger(ConvertToEvernote.class.getName());
     private Resource templatePath;
-    private String enexPath;
 
     private enum CreateType {
         UPDATE,
         CREATE
     }
 
-    public void setEnexPath(String enexPath) {
-        this.enexPath = enexPath;
-    }
-
     public void setTemplatePath(Resource templatePath) {
         this.templatePath = templatePath;
     }
 
-    public Document exportEvernoteXml(List<Blog> blogs, CreateType type) {
+    public Document exportEvernoteXml(List<Blog> blogs, CreateType type, String enexPath) {
         FileInputStream fis = null;
+        String preContent = "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\"><en-note style=\"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;\">";
+        String postContent = "</en-note>]]>";
+
         try {
             SAXReader saxReader = new SAXReader();
             Document document;
@@ -48,6 +46,7 @@ public class ConvertToEvernote {
                 fis = new FileInputStream(enexPath);
                 document = saxReader.read(fis);
             }
+
             if (document == null) {
                 logger.error("fail to get XML Document");
             } else {
@@ -71,6 +70,13 @@ public class ConvertToEvernote {
                         logger.error("the title element is not exist!");
                     } else {
                         titleElm.setText(blog.getSubject());
+                    }
+
+                    Element contentElm = note.element("content");
+                    if (contentElm == null) {
+                        logger.error("the created element is not exist!");
+                    } else {
+                        contentElm.setText(preContent + blog.getContent() + postContent);
                     }
 
                     Element createdElm = note.element("created");
@@ -105,22 +111,24 @@ public class ConvertToEvernote {
         return null;
     }
 
-    public void createEnex(List<Blog> blogs) {
+    public void createEnex(List<Blog> blogs, String enexPath) {
         XMLWriter writer;
         try {
             writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), "UTF-8"));
-            writer.write(exportEvernoteXml(blogs, CreateType.CREATE)); //输出到文件
+            writer.setEscapeText(false);
+            writer.write(exportEvernoteXml(blogs, CreateType.CREATE, enexPath)); //输出到文件
             writer.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    public void updateEnex(List<Blog> blogs) {
+    public void updateEnex(List<Blog> blogs, String enexPath) {
         XMLWriter writer;
         try {
-            Document document = exportEvernoteXml(blogs, CreateType.UPDATE);
+            Document document = exportEvernoteXml(blogs, CreateType.UPDATE, enexPath);
             writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), "UTF-8"));
+            writer.setEscapeText(false);
             writer.write(document); // update file到文件
             writer.close();
         } catch (IOException e) {

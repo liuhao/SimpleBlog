@@ -9,19 +9,15 @@ import java.util.Calendar;
  */
 public class DateUtil {
     public String getTextDate() {
-        java.util.Calendar c = java.util.Calendar.getInstance();
-        java.text.SimpleDateFormat f = new java.text.SimpleDateFormat("yyyy.MM.dd");
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat f = new SimpleDateFormat("yyyy.MM.dd");
         return f.format(c.getTime());
     }
 
     public String getEvernoteDate() {
-        java.util.Calendar c = java.util.Calendar.getInstance();
-        return String.valueOf(c.get(Calendar.YEAR)) +
-                String.valueOf(c.get(Calendar.MONTH)) +
-                String.valueOf(c.get(Calendar.DAY_OF_MONTH) + 1) + "T" +
-                String.valueOf(c.get(Calendar.HOUR_OF_DAY)) +
-                String.valueOf(c.get(Calendar.MINUTE)) +
-                String.valueOf(c.get(Calendar.SECOND)) + "Z";
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
+        return f.format(c.getTime());
     }
 
     public String converTumblrDate(String date) {
@@ -29,15 +25,11 @@ public class DateUtil {
             return "";
         Calendar c = Calendar.getInstance();
         String dateString = date.replaceFirst("(^[0-9]+)[a-zA-Z]+ ", "$1 ");
-        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM yyyy");
+        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM yyyy HH:mm:ss");
+        SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
         try {
-            c.setTime(sdf.parse(dateString));
-            return String.valueOf(c.get(Calendar.YEAR)) +
-                    String.valueOf(c.get(Calendar.MONTH)) +
-                    String.valueOf(c.get(Calendar.DAY_OF_MONTH) + 1) + "T" +
-                    String.valueOf(c.get(Calendar.HOUR_OF_DAY)) +
-                    String.valueOf(c.get(Calendar.MINUTE)) +
-                    String.valueOf(c.get(Calendar.SECOND)) + "Z";
+            c.setTime(sdf.parse(dateString + " 14:09:59"));
+            return f.format(c.getTime());
         } catch (ParseException e) {
             e.printStackTrace();
         }
