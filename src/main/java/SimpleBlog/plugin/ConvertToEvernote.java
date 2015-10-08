@@ -33,8 +33,8 @@ public class ConvertToEvernote {
 
     public Document exportEvernoteXml(List<Blog> blogs, CreateType type, String enexPath) {
         FileInputStream fis = null;
-        String preContent = "<![CDATA[<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\"><en-note style=\"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;\">";
-        String postContent = "</en-note>]]>";
+        String preContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\"><en-note style=\"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;\">";
+        String postContent = "</en-note>";
 
         try {
             SAXReader saxReader = new SAXReader();
@@ -76,7 +76,8 @@ public class ConvertToEvernote {
                     if (contentElm == null) {
                         logger.error("the created element is not exist!");
                     } else {
-                        contentElm.setText(preContent + blog.getContent() + postContent);
+                        contentElm.setText("");
+                        contentElm.addCDATA(preContent + blog.getContent() + postContent);
                     }
 
                     Element createdElm = note.element("created");
@@ -115,7 +116,7 @@ public class ConvertToEvernote {
         XMLWriter writer;
         try {
             writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), "UTF-8"));
-            writer.setEscapeText(false);
+            writer.setEscapeText(true);
             writer.write(exportEvernoteXml(blogs, CreateType.CREATE, enexPath)); //输出到文件
             writer.close();
         } catch (IOException e) {
@@ -128,7 +129,7 @@ public class ConvertToEvernote {
         try {
             Document document = exportEvernoteXml(blogs, CreateType.UPDATE, enexPath);
             writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), "UTF-8"));
-            writer.setEscapeText(false);
+            writer.setEscapeText(true);
             writer.write(document); // update file到文件
             writer.close();
         } catch (IOException e) {

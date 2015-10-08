@@ -1,6 +1,7 @@
 package SimpleBlog.plugin;
 
 import SimpleBlog.entity.Blog;
+import SimpleBlog.entity.NoteResource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.io.XMLWriter;
@@ -14,6 +15,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -119,5 +121,9 @@ public class ImportTumblrPostData {
             return null;
         else
             return blog;
+    }
+
+    private HashMap<String, NoteResource> parseContent(Element content ) {
+        return new HashMap<String, NoteResource>();
     }
 }

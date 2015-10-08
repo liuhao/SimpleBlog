@@ -1,5 +1,7 @@
 package SimpleBlog.entity;
 
+import java.util.HashMap;
+
 /**
  * Created by lyoo on 9/25/2015.
  */
@@ -12,6 +14,7 @@ public class Blog {
     private String tags;
     private String source;
     private String sourceUrl;
+    private HashMap<String, NoteResource> resources;
 
     public String getSource() {
         return source;
@@ -75,5 +78,13 @@ public class Blog {
 
     public void setTags(String tags) {
         this.tags = tags;
+    }
+
+    public HashMap<String, NoteResource> getResources() {
+        return resources;
+    }
+
+    public void setResources(HashMap<String, NoteResource> resources) {
+        this.resources = resources;
     }
 }
