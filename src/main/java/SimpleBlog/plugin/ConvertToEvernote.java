@@ -1,12 +1,10 @@
 package SimpleBlog.plugin;
 
 import SimpleBlog.entity.Blog;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dom4j.Attribute;
-import org.dom4j.Document;
-import org.dom4j.Element;
-import org.dom4j.Node;
+import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.core.io.ClassPathResource;
@@ -39,12 +37,20 @@ public class ConvertToEvernote {
         try {
             SAXReader saxReader = new SAXReader();
             Document document;
+            boolean removeOnce = false;
 
             if (type == CreateType.CREATE) {
                 document = saxReader.read(templatePath.getInputStream()); // 读取XML文件,获得document对象
             } else {
-                fis = new FileInputStream(enexPath);
-                document = saxReader.read(fis);
+                try {
+                    fis = new FileInputStream(enexPath);
+                    document = saxReader.read(fis);
+                } catch (FileNotFoundException | DocumentException e) {
+                    //logger.catching(e);
+                    logger.error("Target file no exist, SAXRead error");
+                    document = saxReader.read(templatePath.getInputStream());
+                    removeOnce = true;
+                }
             }
 
             if (document == null) {
@@ -59,8 +65,9 @@ public class ConvertToEvernote {
                     exportElm.addAttribute("export-date", dateUtil.getEvernoteDate());
                 }
                 Element noteTemplate = exportElm.element("note").createCopy();
-                if (type == CreateType.CREATE) {
+                if (type == CreateType.CREATE || removeOnce) {
                     exportElm.remove(exportElm.element("note"));
+                    removeOnce = false;
                 }
 
                 for (Blog blog : blogs) {
@@ -77,7 +84,7 @@ public class ConvertToEvernote {
                         logger.error("the created element is not exist!");
                     } else {
                         contentElm.setText("");
-                        contentElm.addCDATA(preContent + blog.getContent() + postContent);
+                        contentElm.addCDATA(preContent + StringEscapeUtils.escapeXml10(blog.getContent()) + postContent);
                     }
 
                     Element createdElm = note.element("created");
