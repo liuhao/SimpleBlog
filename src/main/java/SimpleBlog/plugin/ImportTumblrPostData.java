@@ -2,6 +2,8 @@ package SimpleBlog.plugin;
 
 import SimpleBlog.entity.Blog;
 import SimpleBlog.entity.NoteResource;
+import org.apache.commons.io.IOUtils;
+import org.apache.commons.codec.binary.Base64;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.io.XMLWriter;
@@ -11,9 +13,10 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.xml.sax.SAXException;
 
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.*;
+import java.net.URL;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -125,5 +128,58 @@ public class ImportTumblrPostData {
 
     private HashMap<String, NoteResource> parseContent(Element content ) {
         return new HashMap<String, NoteResource>();
+    }
+
+    public byte[] fetchRemoteFile(String location) throws Exception {
+        URL url = new URL(location);
+        InputStream is = null;
+        byte[] bytes = null;
+        try {
+            is = url.openStream ();
+            bytes = IOUtils.toByteArray(is);
+        } catch (IOException e) {
+            //handle errors
+            e.printStackTrace();
+        }
+        finally {
+            if (is != null) is.close();
+        }
+        return bytes;
+    }
+
+    public void calculateResourceHash(byte[] content)
+    {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
+
+
+        md.update(content);
+        byte byteData[] = md.digest();
+
+        //convert the byte to hex format method 1
+        StringBuilder sb = new StringBuilder();
+            for (byte aByteData : byteData) {
+                sb.append(Integer.toString((aByteData & 0xff) + 0x100, 16).substring(1));
+            }
+
+        System.out.println("Digest(in hex format):: " + sb.toString());
+
+        //convert the byte to hex format method 2
+        StringBuilder hexString = new StringBuilder();
+            for (byte aByteData : byteData) {
+                String hex = Integer.toHexString(0xff & aByteData);
+                if (hex.length() == 1) hexString.append('0');
+                hexString.append(hex);
+            }
+        System.out.println("Digest(in hex format):: " + hexString.toString());
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String base64Encode(byte[] content) {
+        Base64 coder = new Base64();
+        return coder.encodeToString(content);
     }
 }
