@@ -4,7 +4,7 @@ package SimpleBlog.entity;
  * Created by lyoo on 10/7/2015.
  */
 public class NoteResource {
-    byte[] data;
+    String data;
     String mimeType;
     String fileName;
     String fileHashcode;
@@ -12,11 +12,11 @@ public class NoteResource {
     int width;
     int height;
 
-    public byte[] getData() {
+    public String getData() {
         return data;
     }
 
-    public void setData(byte[] data) {
+    public void setData(String data) {
         this.data = data;
     }
 

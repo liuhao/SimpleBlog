@@ -155,8 +155,32 @@ public class ImportTumblrPostData {
         return rtn;
     }
 
-    private String parseText(Element e) {
-        return e.select("div.go").text();
+    private void parseText(Element e) {
+        if (e.select("div.go").size() == 1) {
+            Element allElement = e.select("div.go").get(0);
+            Elements imageElement = allElement.select("figure");
+            if (imageElement.size() > 0) {
+                for (Element img : imageElement) {
+                    NoteResource res = new NoteResource();
+                    res.setWidth(Integer.getInteger(img.select("img").attr("width")));
+                    res.setHeight(Integer.getInteger(img.select("img").attr("height")));
+                    res.setMimeType(img.select("img").attr("src"));
+                    byte[] imgBinData = null;
+                    res.setSourceUrl(img.select("img").attr("src"));
+                    try {
+                        imgBinData = fetchRemoteFile(res.getSourceUrl());
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    if (imgBinData != null) {
+                        res.setData(base64Encode(imgBinData));
+                        res.setFileHashcode(calculateResourceHash(imgBinData));
+                    }
+
+                }
+            }
+
+        }
     }
 
     public byte[] fetchRemoteFile(String location) throws Exception {
@@ -176,7 +200,7 @@ public class ImportTumblrPostData {
         return bytes;
     }
 
-    public void calculateResourceHash(byte[] content)
+    public String calculateResourceHash(byte[] content)
     {
         MessageDigest md = null;
         try {
@@ -202,9 +226,12 @@ public class ImportTumblrPostData {
                 hexString.append(hex);
             }
         System.out.println("Digest(in hex format):: " + hexString.toString());
+
+            return sb.toString();
         } catch (NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
+        return null;
     }
 
     public String base64Encode(byte[] content) {
