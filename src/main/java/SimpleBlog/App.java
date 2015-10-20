@@ -46,19 +46,20 @@ public class App {
         else
             cte.createEnex(blogs, "NewExport.enex");
 
-
+*/
         String tumblrUrl = "http://liuhao2012.tumblr.com/page/";
         for (int i = 1; i < 75; i++) {
             System.out.println(i);
             cte.updateEnex(importTumblr.getXmlDocument(tumblrUrl + String.valueOf(i)),
                 "TumblrPostExport.enex");
         }
-*/
+/*
         try {
             byte[] c = importTumblr.fetchRemoteFile("file:///d|/birthday.png");
             importTumblr.calculateResourceHash(c);
         } catch (Exception e) {
             e.printStackTrace();
         }
+*/
     }
 }

@@ -111,7 +111,8 @@ public class ImportTumblrPostData {
         Blog blog = new Blog();
         //System.out.println(post.toString());
         blog.setSubject(post.select(subjectXPath).text());
-        blog.setContent(post.select(contentXPath).text());
+        blog.setResources(new HashMap<String, NoteResource>());
+        blog.setContent(parseContent(post.select(contentXPath)));
         String d = dateUtil.converTumblrDate(post.select(dateXPath).text());
         blog.setCreate(d);
         blog.setUpdate(d);
@@ -126,8 +127,36 @@ public class ImportTumblrPostData {
             return blog;
     }
 
-    private HashMap<String, NoteResource> parseContent(Element content ) {
-        return new HashMap<String, NoteResource>();
+    private String parseContent(Elements content) {
+        String rtn = "Error";
+        Element e = content.get(0);
+        if(content.size() == 1) {
+            switch (e.className()) {
+                case "content text" :
+                    rtn = "content text";
+                    parseText(e);
+                    break;
+                case "content image" : rtn = "content image";
+                    break;
+                case "content video" : rtn = "content video";
+                    break;
+                case "content audio" : rtn = "content audio";
+                    break;
+                case "content chat" : rtn = "content chat";
+                    break;
+                case "content link" : rtn = "content link";
+                    break;
+                case "content quote" : rtn = "content quote";
+                    break;
+                default : rtn = "Error";
+                    break;
+            }
+        }
+        return rtn;
+    }
+
+    private String parseText(Element e) {
+        return e.select("div.go").text();
     }
 
     public byte[] fetchRemoteFile(String location) throws Exception {
