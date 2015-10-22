@@ -112,7 +112,7 @@ public class ImportTumblrPostData {
         //System.out.println(post.toString());
         blog.setSubject(post.select(subjectXPath).text());
         blog.setResources(new HashMap<String, NoteResource>());
-        blog.setContent(parseContent(post.select(contentXPath)));
+        blog.setContent(parseContent(post.select(contentXPath), blog.getResources()));
         String d = dateUtil.converTumblrDate(post.select(dateXPath).text());
         blog.setCreate(d);
         blog.setUpdate(d);
@@ -127,14 +127,14 @@ public class ImportTumblrPostData {
             return blog;
     }
 
-    private String parseContent(Elements content) {
+    private String parseContent(Elements content, HashMap<String, NoteResource> resMap) {
         String rtn = "Error";
         Element e = content.get(0);
         if(content.size() == 1) {
             switch (e.className()) {
                 case "content text" :
                     rtn = "content text";
-                    parseText(e);
+                    parseText(e, resMap);
                     break;
                 case "content image" : rtn = "content image";
                     break;
@@ -155,7 +155,7 @@ public class ImportTumblrPostData {
         return rtn;
     }
 
-    private void parseText(Element e) {
+    private void parseText(Element e, HashMap<String, NoteResource> resMap) {
         if (e.select("div.go").size() == 1) {
             Element allElement = e.select("div.go").get(0);
             Elements imageElement = allElement.select("figure");
@@ -164,7 +164,7 @@ public class ImportTumblrPostData {
                     NoteResource res = new NoteResource();
                     res.setWidth(Integer.getInteger(img.select("img").attr("width")));
                     res.setHeight(Integer.getInteger(img.select("img").attr("height")));
-                    res.setMimeType(img.select("img").attr("src"));
+                    res.setMimeType(extractFileExtension(img.select("img").attr("src")));
                     byte[] imgBinData = null;
                     res.setSourceUrl(img.select("img").attr("src"));
                     try {
@@ -176,13 +176,17 @@ public class ImportTumblrPostData {
                         res.setData(base64Encode(imgBinData));
                         res.setFileHashcode(calculateResourceHash(imgBinData));
                     }
-
+                    resMap.put(res.getFileHashcode(), res);
                 }
             }
 
         }
     }
 
+    public String extractFileExtension(String url) {
+        String[] name = url.split("\\.(?=[^\\.]+$)");
+        return name[name.length -1];
+    }
     public byte[] fetchRemoteFile(String location) throws Exception {
         URL url = new URL(location);
         InputStream is = null;
