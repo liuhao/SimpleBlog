@@ -48,7 +48,7 @@ public class App {
 
 */
         String tumblrUrl = "http://liuhao2012.tumblr.com/page/";
-        for (int i = 1; i < 75; i++) {
+        for (int i = 1; i < 2; i++) {
             System.out.println(i);
             cte.updateEnex(importTumblr.getXmlDocument(tumblrUrl + String.valueOf(i)),
                 "TumblrPostExport.enex");
