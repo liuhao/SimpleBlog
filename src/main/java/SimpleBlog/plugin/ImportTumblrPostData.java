@@ -4,6 +4,7 @@ import SimpleBlog.entity.Blog;
 import SimpleBlog.entity.NoteResource;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.io.XMLWriter;
@@ -128,42 +129,44 @@ public class ImportTumblrPostData {
     }
 
     private String parseContent(Elements content, HashMap<String, NoteResource> resMap) {
-        String rtn = "Error";
+        StringBuffer rtn = new StringBuffer("");
         Element e = content.get(0);
         if(content.size() == 1) {
             switch (e.className()) {
                 case "content text" :
-                    rtn = "content text";
-                    parseText(e, resMap);
+                    rtn.append(StringEscapeUtils.escapeXml10(e.select("div.go").text()));
+                    rtn.append(parseText(e, resMap));
                     break;
-                case "content image" : rtn = "content image";
+                case "content image" : rtn.append("content image");
                     break;
-                case "content video" : rtn = "content video";
+                case "content video" : rtn.append("content video");
                     break;
-                case "content audio" : rtn = "content audio";
+                case "content audio" : rtn.append("content audio");
                     break;
-                case "content chat" : rtn = "content chat";
+                case "content chat" : rtn.append("content chat");
                     break;
-                case "content link" : rtn = "content link";
+                case "content link" : rtn.append("content link");
                     break;
-                case "content quote" : rtn = "content quote";
+                case "content quote" : rtn.append("content quote");
                     break;
-                default : rtn = "Error";
+                default : rtn.append("Error");
                     break;
             }
         }
-        return rtn;
+        return rtn.toString();
     }
 
-    private void parseText(Element e, HashMap<String, NoteResource> resMap) {
+    private String parseText(Element e, HashMap<String, NoteResource> resMap) {
+        StringBuffer resContent = new StringBuffer("");
         if (e.select("div.go").size() == 1) {
             Element allElement = e.select("div.go").get(0);
             Elements imageElement = allElement.select("figure");
             if (imageElement.size() > 0) {
+
                 for (Element img : imageElement) {
                     NoteResource res = new NoteResource();
-                    res.setWidth(Integer.getInteger(img.select("img").attr("width")));
-                    res.setHeight(Integer.getInteger(img.select("img").attr("height")));
+                    res.setWidth(img.select("img").attr("width"));
+                    res.setHeight(img.select("img").attr("height"));
                     res.setMimeType(extractFileExtension(img.select("img").attr("src")));
                     byte[] imgBinData = null;
                     res.setSourceUrl(img.select("img").attr("src"));
@@ -177,15 +180,18 @@ public class ImportTumblrPostData {
                         res.setFileHashcode(calculateResourceHash(imgBinData));
                     }
                     resMap.put(res.getFileHashcode(), res);
+                    resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n"
+                        + "\t<en-media width=\"" + res.getWidth() + "\" height=\"" + res.getHeight() + "\" alt=\"image\" hash=\"" + res.getFileHashcode() + "\" type=\"image/" + res.getMimeType() + "\" style=\"max-width:400px;\"/>\n"
+                        + "</div>\n");
                 }
             }
-
         }
+        return resContent.toString();
     }
 
     public String extractFileExtension(String url) {
         String[] name = url.split("\\.(?=[^\\.]+$)");
-        return name[name.length -1];
+        return name[name.length - 1];
     }
     public byte[] fetchRemoteFile(String location) throws Exception {
         URL url = new URL(location);

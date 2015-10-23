@@ -9,8 +9,8 @@ public class NoteResource {
     String fileName;
     String fileHashcode;
     String sourceUrl;
-    int width;
-    int height;
+    String width;
+    String height;
 
     public String getData() {
         return data;
@@ -52,19 +52,19 @@ public class NoteResource {
         this.sourceUrl = sourceUrl;
     }
 
-    public int getWidth() {
+    public String getWidth() {
         return width;
     }
 
-    public void setWidth(int width) {
+    public void setWidth(String width) {
         this.width = width;
     }
 
-    public int getHeight() {
+    public String getHeight() {
         return height;
     }
 
-    public void setHeight(int height) {
+    public void setHeight(String height) {
         this.height = height;
     }
 }

@@ -31,7 +31,7 @@
               <property name="tagsXPath" value="p.tags" />
               <property name="contentXPath" value="div.sidebar + div" />
               <property name="subjectXPath" value="h3 > a" />
-              <property name="dateXPath" value="h2" />
+              <property name="dateXPath" value="li.date > h2" />
               <property name="dateUtil" ref="dateUtil" />
        </bean>
 

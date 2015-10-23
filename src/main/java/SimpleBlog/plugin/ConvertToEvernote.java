@@ -1,6 +1,7 @@
 package SimpleBlog.plugin;
 
 import SimpleBlog.entity.Blog;
+import SimpleBlog.entity.NoteResource;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -84,7 +85,7 @@ public class ConvertToEvernote {
                         logger.error("the created element is not exist!");
                     } else {
                         contentElm.setText("");
-                        contentElm.addCDATA(preContent + StringEscapeUtils.escapeXml10(blog.getContent()) + postContent);
+                        contentElm.addCDATA(preContent + blog.getContent() + postContent);
                     }
 
                     Element createdElm = note.element("created");
@@ -100,6 +101,14 @@ public class ConvertToEvernote {
                     } else {
                         updatedElm.setText(blog.getUpdate());
                     }
+
+                    // add resource section
+                    if (blog.getResources() != null) {
+                        for(NoteResource res : blog.getResources().values()) {
+                        note.add(createResourceElm(res));
+                        }
+                    }
+
                     exportElm.add(note);
                 }
                 return document;
@@ -117,6 +126,36 @@ public class ConvertToEvernote {
             }
         }
         return null;
+    }
+
+    public Element createResourceElm(NoteResource res) {
+        Element root = new DocumentFactory().createElement("resource");
+
+        Element data = new DocumentFactory().createElement("data");
+        data.addAttribute("encoding", "base64");
+        data.setText(res.getData());
+        root.add(data);
+
+        Element mime = new DocumentFactory().createElement("mime");
+        mime.setText("image/" + res.getMimeType());
+        root.add(mime);
+
+        Element width = new DocumentFactory().createElement("width");
+        width.setText(res.getWidth());
+        root.add(width);
+
+        Element height = new DocumentFactory().createElement("height");
+        height.setText(res.getHeight());
+        root.add(height);
+
+        Element source_url = new DocumentFactory().createElement("source-url");
+        source_url.setText(res.getSourceUrl());
+
+        Element resource_attributes = new DocumentFactory().createElement("resource-attributes");
+        resource_attributes.add(source_url);
+        root.add(resource_attributes);
+
+        return root;
     }
 
     public void createEnex(List<Blog> blogs, String enexPath) {
