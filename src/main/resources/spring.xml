@@ -26,7 +26,7 @@
 
        <bean id="importTumblrPostData" class="SimpleBlog.plugin.ImportTumblrPostData">
               <property name="albumXPath" value="div#header > h1 > a" />
-              <property name="postsXPath" value="div.post" />
+              <property name="postsXPath" value="div.post:not([style])" />
               <property name="sourceUrlXPath" value="li.permalink > a" />
               <property name="tagsXPath" value="p.tags" />
               <property name="contentXPath" value="div.sidebar + div" />

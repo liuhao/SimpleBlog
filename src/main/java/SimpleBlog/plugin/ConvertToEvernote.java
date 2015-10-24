@@ -37,79 +37,73 @@ public class ConvertToEvernote {
 
         try {
             SAXReader saxReader = new SAXReader();
-            Document document;
             boolean removeOnce = false;
+            Document document = null;
 
-            if (type == CreateType.CREATE) {
-                document = saxReader.read(templatePath.getInputStream()); // 读取XML文件,获得document对象
-            } else {
+            Document template = saxReader.read(templatePath.getInputStream()); // 读取XML文件,获得document对象
+            Element noteTemplate = template.getRootElement().element("note").createCopy();
+
+            if (type == CreateType.UPDATE) {
                 try {
                     fis = new FileInputStream(enexPath);
                     document = saxReader.read(fis);
                 } catch (FileNotFoundException | DocumentException e) {
                     //logger.catching(e);
                     logger.error("Target file no exist, SAXRead error");
-                    document = saxReader.read(templatePath.getInputStream());
+                    document = template;
                     removeOnce = true;
                 }
             }
 
-            if (document == null) {
-                logger.error("fail to get XML Document");
-            } else {
+            if (document != null) {
                 Element exportElm = document.getRootElement();
-
-                if (exportElm == null) {
-                    logger.error("the en-export element is not exist!");
-                } else {
+                if (exportElm != null) {
                     DateUtil dateUtil = new DateUtil();
                     exportElm.addAttribute("export-date", dateUtil.getEvernoteDate());
-                }
-                Element noteTemplate = exportElm.element("note").createCopy();
-                if (type == CreateType.CREATE || removeOnce) {
-                    exportElm.remove(exportElm.element("note"));
-                    removeOnce = false;
-                }
 
-                for (Blog blog : blogs) {
-                    Element note = noteTemplate.createCopy();
-                    Element titleElm = note.element("title");
-                    if (titleElm == null) {
-                        logger.error("the title element is not exist!");
-                    } else {
-                        titleElm.setText(blog.getSubject());
+                    if (removeOnce) {
+                        exportElm.remove(exportElm.element("note"));
                     }
 
-                    Element contentElm = note.element("content");
-                    if (contentElm == null) {
-                        logger.error("the created element is not exist!");
-                    } else {
-                        contentElm.setText("");
-                        contentElm.addCDATA(preContent + blog.getContent() + postContent);
-                    }
-
-                    Element createdElm = note.element("created");
-                    if (createdElm == null) {
-                        logger.error("the created element is not exist!");
-                    } else {
-                        createdElm.setText(blog.getCreate());
-                    }
-
-                    Element updatedElm = note.element("updated");
-                    if (updatedElm == null) {
-                        logger.error("the updated element is not exist!");
-                    } else {
-                        updatedElm.setText(blog.getUpdate());
-                    }
-
-                    // add resource section
-                    if (blog.getResources() != null) {
-                        for(NoteResource res : blog.getResources().values()) {
-                        note.add(createResourceElm(res));
+                    for (Blog blog : blogs) {
+                        Element note = noteTemplate.createCopy();
+                        Element titleElm = note.element("title");
+                        if (titleElm == null) {
+                            logger.error("the title element is not exist!");
+                        } else {
+                            titleElm.setText(blog.getSubject());
                         }
-                    }
 
-                    exportElm.add(note);
+                        Element contentElm = note.element("content");
+                        if (contentElm == null) {
+                            logger.error("the created element is not exist!");
+                        } else {
+                            contentElm.setText("");
+                            contentElm.addCDATA(preContent + blog.getContent() + postContent);
+                        }
+
+                        Element createdElm = note.element("created");
+                        if (createdElm == null) {
+                            logger.error("the created element is not exist!");
+                        } else {
+                            createdElm.setText(blog.getCreate());
+                        }
+
+                        Element updatedElm = note.element("updated");
+                        if (updatedElm == null) {
+                            logger.error("the updated element is not exist!");
+                        } else {
+                            updatedElm.setText(blog.getUpdate());
+                        }
+
+                        // add resource section
+                        if (blog.getResources() != null && !blog.getResources().isEmpty()) {
+                            for (NoteResource res : blog.getResources().values()) {
+                                note.add(createResourceElm(res));
+                            }
+                        }
+                        exportElm.add(note);
+                    }
                 }
                 return document;
             }

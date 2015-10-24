@@ -128,13 +128,13 @@ public class ImportTumblrPostData {
 		blog.setAuthor("Hao Liu");
 
 		if (blog.getSubject().isEmpty())
-			return null;
-		else
-			return blog;
+			blog.setSubject("Title");
+
+        return blog;
 	}
 
 	private String parseContent(Elements content, HashMap<String, NoteResource> resMap) {
-		StringBuffer rtn = new StringBuffer("");
+		StringBuilder rtn = new StringBuilder("");
 		Element e = content.get(0);
 		if (content.size() == 1) {
 			switch (e.className()) {
@@ -170,7 +170,7 @@ public class ImportTumblrPostData {
 	}
 
 	private String parseText(Element e, HashMap<String, NoteResource> resMap) {
-		StringBuffer resContent = new StringBuffer("");
+		StringBuilder resContent = new StringBuilder("");
 		if (e.select("div.go").size() == 1) {
 			Element allElement = e.select("div.go").get(0);
 			Elements imageElement = allElement.select("figure");
@@ -193,12 +193,8 @@ public class ImportTumblrPostData {
 						res.setFileHashcode(calculateResourceHash(imgBinData));
 					}
 					resMap.put(res.getFileHashcode(), res);
-					resContent.append(
-						"<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n"
-							+ "\t<en-media width=\"" + res.getWidth() + "\" height=\"" + res
-							.getHeight() + "\" alt=\"image\" hash=\"" + res.getFileHashcode()
-							+ "\" type=\"image/" + res.getMimeType()
-							+ "\" style=\"max-width:400px;\"/>\n" + "</div>\n");
+					resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res
+                            .getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res.getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
 				}
 			}
 		}
@@ -206,7 +202,7 @@ public class ImportTumblrPostData {
 	}
 
 	private String parseImage(Element e, HashMap<String, NoteResource> resMap) {
-		StringBuffer resContent = new StringBuffer("");
+		StringBuilder resContent = new StringBuilder("");
 		Element imageElement = e.select("a[rel]").get(0);
 		if (imageElement != null) {
 			NoteResource res = new NoteResource();
@@ -226,16 +222,19 @@ public class ImportTumblrPostData {
 					res.setHeight(String.valueOf(bImageFromConvert.getHeight()));
 				} catch (IOException e1) {
 					e1.printStackTrace();
-				}
-				res.setData(base64Encode(imgBinData));
+				} finally {
+                    try {
+                        in.close();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                }
+                res.setData(base64Encode(imgBinData));
 				res.setFileHashcode(calculateResourceHash(imgBinData));
 			}
 			resMap.put(res.getFileHashcode(), res);
-			resContent.append(
-				"<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n"
-					+ "\t<en-media width=\"" + res.getWidth() + "\" height=\"" + res.getHeight()
-					+ "\" alt=\"image\" hash=\"" + res.getFileHashcode() + "\" type=\"image/" + res
-					.getMimeType() + "\" style=\"max-width:400px;\"/>\n" + "</div>\n");
+			resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res.getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res
+                    .getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
 		}
 		return resContent.toString();
 	}
