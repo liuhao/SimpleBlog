@@ -21,9 +21,32 @@ public class App {
         ApplicationContext context;
         context = new ClassPathXmlApplicationContext("spring.xml");
 
+        switch (args[0]) {
+            case "tumblr":
+                tumblrImport(context);
+                break;
+            case "new":
+                newNote(context);
+                break;
+            default:
+                newNote(context);
+                break;
+        }
+
+/*
+        try {
+            byte[] c = importTumblr.fetchRemoteFile("file:///d|/birthday.png");
+            importTumblr.calculateResourceHash(c);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+*/
+    }
+
+    private static void newNote(ApplicationContext context) {
         ConvertToEvernote cte = (ConvertToEvernote) context.getBean("convertToEvernote");
         YahooWeatherData data = (YahooWeatherData) context.getBean("yahooData");
-        ImportTumblrPostData importTumblr = (ImportTumblrPostData) context.getBean("importTumblrPostData");
+
         DateUtil date = (DateUtil) context.getBean("dateUtil");
         Blog blog = new Blog();
 
@@ -37,29 +60,25 @@ public class App {
         //XMLWriter writer = new XMLWriter(new OutputStreamWriter(System.out, "UTF-8"));
         //writer.write(cte.exportEvernoteXml(blog));
         //writer.close();
-/*
+
         List<Blog> blogs = new ArrayList<Blog>();
         blogs.add(blog);
 
-        if (new File("./NewExport.enex").exists())
+        if (new File("./NewExport.enex").exists()) {
             cte.updateEnex(blogs, "NewExport.enex");
-        else
+        } else {
             cte.createEnex(blogs, "NewExport.enex");
+        }
+    }
 
-*/
+    private static void tumblrImport(ApplicationContext context) {
+        ConvertToEvernote cte = (ConvertToEvernote) context.getBean("convertToEvernote");
+        ImportTumblrPostData importTumblr = (ImportTumblrPostData) context.getBean("importTumblrPostData");
         String tumblrUrl = "http://liuhao2012.tumblr.com/page/";
         for (int i = 1; i < 76; i++) {
             System.out.println(i);
             cte.updateEnex(importTumblr.getXmlDocument(tumblrUrl + String.valueOf(i)),
-                "TumblrPostExport.enex");
+                    "TumblrPostExport.enex");
         }
-/*
-        try {
-            byte[] c = importTumblr.fetchRemoteFile("file:///d|/birthday.png");
-            importTumblr.calculateResourceHash(c);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-*/
     }
 }

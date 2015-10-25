@@ -115,7 +115,6 @@ public class ImportTumblrPostData {
 
 	private Blog parsePost(Element post) {
 		Blog blog = new Blog();
-		//System.out.println(post.toString());
 		blog.setSubject(post.select(subjectXPath).text());
 		blog.setResources(new HashMap<String, NoteResource>());
 		blog.setContent(parseContent(post.select(contentXPath), blog.getResources()));

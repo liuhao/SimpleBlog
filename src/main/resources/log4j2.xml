@@ -12,7 +12,7 @@
         <Logger name="SimpleBlog.App" level="debug">
             <AppenderRef ref="SimpleBlog"/>
         </Logger>
-        <Logger name="SimpleBlog.plugin.ConvertToEvernote" level="trace">
+        <Logger name="SimpleBlog.plugin.ConvertToEvernote" level="debug">
             <AppenderRef ref="SimpleBlog"/>
         </Logger>
         <Logger name="SimpleBlog.plugin.YahooWeatherData" level="debug">

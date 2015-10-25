@@ -53,6 +53,9 @@ public class ConvertToEvernote {
                     document = template;
                     removeOnce = true;
                 }
+            } else {
+                document = template;
+                removeOnce = true;
             }
 
             if (document != null) {
