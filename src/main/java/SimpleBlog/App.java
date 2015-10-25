@@ -20,8 +20,8 @@ public class App {
     public static void main(String[] args) throws IOException {
         ApplicationContext context;
         context = new ClassPathXmlApplicationContext("spring.xml");
-
-        switch (args[0]) {
+        String arg = args.length > 0 ? args[0] : "";
+        switch (arg) {
             case "tumblr":
                 tumblrImport(context);
                 break;
@@ -29,7 +29,7 @@ public class App {
                 newNote(context);
                 break;
             default:
-                newNote(context);
+                System.out.println("java -cp Blog-1.0-SNAPSHOT.jar SimpleBlog.App [ new | tumblr ]");
                 break;
         }
 
