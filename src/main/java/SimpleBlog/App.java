@@ -52,7 +52,7 @@ public class App {
 
         blog.setAuthor("Hao Liu");
         blog.setSubject(date.getTextDate() + " " + data.getWeather() + " " + data.getLocation());
-        blog.setContent("What a wondful day. 美好的一天。");
+        blog.setContent("What a wonderful day. 美好的一天。");
         blog.setCreate(date.getEvernoteDate());
         blog.setUpdate(date.getEvernoteDate());
         blog.setTags("@2015 Diary");
