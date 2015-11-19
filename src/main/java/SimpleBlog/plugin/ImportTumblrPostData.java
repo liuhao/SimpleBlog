@@ -143,10 +143,13 @@ public class ImportTumblrPostData {
 				break;
 			case "content image":
 				rtn.append(StringEscapeUtils.escapeXml10(e.select("div.description").text()));
-				rtn.append(parseImage(e, resMap));
+				rtn.append(parseImage(e, "a[rel]", resMap));
 				break;
 			case "content video":
-				rtn.append("content video");
+				rtn.append(StringEscapeUtils.escapeXml10(e.select("div.description").text()));
+                String a = e.select("a[src]").text();
+				rtn.append(parseImage(parseIFrame(e.select("iframe").attr("src"), "div.photoset").first(),
+                        "a.photoset_photo", resMap));
 				break;
 			case "content audio":
 				rtn.append("content audio");
@@ -200,9 +203,9 @@ public class ImportTumblrPostData {
 		return resContent.toString();
 	}
 
-	private String parseImage(Element e, HashMap<String, NoteResource> resMap) {
+	private String parseImage(Element e, String pattern, HashMap<String, NoteResource> resMap) {
 		StringBuilder resContent = new StringBuilder("");
-		Element imageElement = e.select("a[rel]").get(0);
+		Element imageElement = e.select(pattern).get(0);
 		if (imageElement != null) {
 			NoteResource res = new NoteResource();
 			res.setMimeType(extractFileExtension(imageElement.attr("href")));
@@ -236,6 +239,19 @@ public class ImportTumblrPostData {
                     .getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
 		}
 		return resContent.toString();
+	}
+
+	private Elements parseIFrame(String url, String pattern) {
+		Document html = null;
+		try {
+			html = Jsoup.connect(url).get();
+		} catch (IOException e) {
+			logger.catching(e);
+			logger.error(
+					"no protocol is specified, or an unknown protocol is found, or iFrame url is null.");
+		}
+		Elements resource = html.select(pattern);
+		return resource;
 	}
 
 	public String extractFileExtension(String url) {
