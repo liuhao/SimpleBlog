@@ -205,39 +205,41 @@ public class ImportTumblrPostData {
 
 	private String parseImage(Element e, String pattern, HashMap<String, NoteResource> resMap) {
 		StringBuilder resContent = new StringBuilder("");
-		Element imageElement = e.select(pattern).get(0);
-		if (imageElement != null) {
-			NoteResource res = new NoteResource();
-			res.setMimeType(extractFileExtension(imageElement.attr("href")));
-			byte[] imgBinData = null;
-			res.setSourceUrl(imageElement.attr("href"));
-			try {
-				imgBinData = fetchRemoteFile(res.getSourceUrl());
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-			if (imgBinData != null) {
-				InputStream in = new ByteArrayInputStream(imgBinData);
-				try {
-					BufferedImage bImageFromConvert = ImageIO.read(in);
-					res.setWidth(String.valueOf(bImageFromConvert.getWidth()));
-					res.setHeight(String.valueOf(bImageFromConvert.getHeight()));
-				} catch (IOException e1) {
-					e1.printStackTrace();
-				} finally {
+		Elements imageElements = e.select(pattern);
+		for(Element imageElement : imageElements) {
+            if (imageElement != null) {
+                NoteResource res = new NoteResource();
+                res.setMimeType(extractFileExtension(imageElement.attr("href")));
+                byte[] imgBinData = null;
+                res.setSourceUrl(imageElement.attr("href"));
+                try {
+                    imgBinData = fetchRemoteFile(res.getSourceUrl());
+                } catch (Exception e1) {
+                    e1.printStackTrace();
+                }
+                if (imgBinData != null) {
+                    InputStream in = new ByteArrayInputStream(imgBinData);
                     try {
-                        in.close();
+                        BufferedImage bImageFromConvert = ImageIO.read(in);
+                        res.setWidth(String.valueOf(bImageFromConvert.getWidth()));
+                        res.setHeight(String.valueOf(bImageFromConvert.getHeight()));
                     } catch (IOException e1) {
                         e1.printStackTrace();
+                    } finally {
+                        try {
+                            in.close();
+                        } catch (IOException e1) {
+                            e1.printStackTrace();
+                        }
                     }
+                    res.setData(base64Encode(imgBinData));
+                    res.setFileHashcode(calculateResourceHash(imgBinData));
                 }
-                res.setData(base64Encode(imgBinData));
-				res.setFileHashcode(calculateResourceHash(imgBinData));
-			}
-			resMap.put(res.getFileHashcode(), res);
-			resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res.getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res
-                    .getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
-		}
+                resMap.put(res.getFileHashcode(), res);
+                resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res.getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res
+                        .getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
+            }
+        }
 		return resContent.toString();
 	}
 
