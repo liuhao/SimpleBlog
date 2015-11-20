@@ -134,15 +134,21 @@ public class ConvertToEvernote {
         root.add(data);
 
         Element mime = new DocumentFactory().createElement("mime");
-        mime.setText("image/" + res.getMimeType());
+        mime.setText(res.getMimeType());
         root.add(mime);
 
-        Element width = new DocumentFactory().createElement("width");
-        width.setText(res.getWidth());
-        root.add(width);
+        if (res.getWidth() != null) {
+            Element width = new DocumentFactory().createElement("width");
+            width.setText(res.getWidth());
+            root.add(width);
+        }
 
         Element height = new DocumentFactory().createElement("height");
-        height.setText(res.getHeight());
+        if (res.getHeight() != null) {
+            height.setText(res.getHeight());
+        } else {
+            height.setText("43");
+        }
         root.add(height);
 
         Element source_url = new DocumentFactory().createElement("source-url");

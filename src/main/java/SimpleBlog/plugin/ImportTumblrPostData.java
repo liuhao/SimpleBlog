@@ -29,187 +29,193 @@ import java.util.List;
  */
 public class ImportTumblrPostData {
 
-	private static Logger logger = LogManager.getLogger(ImportTumblrPostData.class.getName());
+    private static Logger logger = LogManager.getLogger(ImportTumblrPostData.class.getName());
 
-	private static final String TUMBLR_POST_DATA_GET_URL;
+    private static final String TUMBLR_POST_DATA_GET_URL;
 
-	static {
-		TUMBLR_POST_DATA_GET_URL = "http://liuhao2012.tumblr.com/page/3";
-	}
+    static {
+        TUMBLR_POST_DATA_GET_URL = "http://liuhao2012.tumblr.com/page/3";
+    }
 
-	private String albumXPath;
-	private String postsXPath;
-	// the children node of the post node
-	private String sourceUrlXPath;
-	private String tagsXPath;
-	private String contentXPath;
-	private String subjectXPath;
-	private String dateXPath;
-	private DateUtil dateUtil;
+    private String albumXPath;
+    private String postsXPath;
+    // the children node of the post node
+    private String sourceUrlXPath;
+    private String tagsXPath;
+    private String contentXPath;
+    private String subjectXPath;
+    private String dateXPath;
+    private DateUtil dateUtil;
 
-	public void setAlbumXPath(String albumXPath) {
-		this.albumXPath = albumXPath;
-	}
+    public void setAlbumXPath(String albumXPath) {
+        this.albumXPath = albumXPath;
+    }
 
-	public void setPostsXPath(String postsXPath) {
-		this.postsXPath = postsXPath;
-	}
+    public void setPostsXPath(String postsXPath) {
+        this.postsXPath = postsXPath;
+    }
 
-	public void setSourceUrlXPath(String sourceUrlXPath) {
-		this.sourceUrlXPath = sourceUrlXPath;
-	}
+    public void setSourceUrlXPath(String sourceUrlXPath) {
+        this.sourceUrlXPath = sourceUrlXPath;
+    }
 
-	public void setTagsXPath(String tagsXPath) {
-		this.tagsXPath = tagsXPath;
-	}
+    public void setTagsXPath(String tagsXPath) {
+        this.tagsXPath = tagsXPath;
+    }
 
-	public void setContentXPath(String contentXPath) {
-		this.contentXPath = contentXPath;
-	}
+    public void setContentXPath(String contentXPath) {
+        this.contentXPath = contentXPath;
+    }
 
-	public void setSubjectXPath(String subjectXPath) {
-		this.subjectXPath = subjectXPath;
-	}
+    public void setSubjectXPath(String subjectXPath) {
+        this.subjectXPath = subjectXPath;
+    }
 
-	public void setDateXPath(String dateXPath) {
-		this.dateXPath = dateXPath;
-	}
+    public void setDateXPath(String dateXPath) {
+        this.dateXPath = dateXPath;
+    }
 
-	public void setDateUtil(DateUtil dateUtil) {
-		this.dateUtil = dateUtil;
-	}
+    public void setDateUtil(DateUtil dateUtil) {
+        this.dateUtil = dateUtil;
+    }
 
-	public List<Blog> getXmlDocument(String tumblrUrl) {
-		if (tumblrUrl.isEmpty())
-			tumblrUrl = TUMBLR_POST_DATA_GET_URL;
+    public List<Blog> getXmlDocument(String tumblrUrl) {
+        if (tumblrUrl.isEmpty())
+            tumblrUrl = TUMBLR_POST_DATA_GET_URL;
 
-		try {
-			List<Blog> blogs = new ArrayList<Blog>();
-			Document doc = Jsoup.connect(tumblrUrl).get();
-			Elements posts = doc.select(postsXPath);
-			String albumName = doc.select(albumXPath).text();
+        try {
+            List<Blog> blogs = new ArrayList<Blog>();
+            Document doc = Jsoup.connect(tumblrUrl).get();
+            Elements posts = doc.select(postsXPath);
+            String albumName = doc.select(albumXPath).text();
 
-			if (posts != null) {
-				String tempDate = "";
-				for (Element p : posts) {
-					Blog blog = parsePost(p);
-					if (blog != null) {
-						if (blog.getCreate().isEmpty()) {
-							blog.setCreate(tempDate);
-							blog.setUpdate(tempDate);
-						} else {
-							tempDate = blog.getCreate();
-						}
-						blogs.add(blog);
-					}
-				}
-			}
-			return blogs;
-		} catch (IOException e) {
-			logger.catching(e);
-			logger.error(
-				"no protocol is specified, or an unknown protocol is found, or url is null.");
-		}
-		return null;
-	}
+            if (posts != null) {
+                String tempDate = "";
+                for (Element p : posts) {
+                    Blog blog = parsePost(p);
+                    if (blog != null) {
+                        if (blog.getCreate().isEmpty()) {
+                            blog.setCreate(tempDate);
+                            blog.setUpdate(tempDate);
+                        } else {
+                            tempDate = blog.getCreate();
+                        }
+                        blogs.add(blog);
+                    }
+                }
+            }
+            return blogs;
+        } catch (IOException e) {
+            logger.catching(e);
+            logger.error(
+                    "no protocol is specified, or an unknown protocol is found, or url is null.");
+        }
+        return null;
+    }
 
-	private Blog parsePost(Element post) {
-		Blog blog = new Blog();
-		blog.setSubject(post.select(subjectXPath).text());
-		blog.setResources(new HashMap<String, NoteResource>());
-		blog.setContent(parseContent(post.select(contentXPath), blog.getResources()));
-		String d = dateUtil.converTumblrDate(post.select(dateXPath).text());
-		blog.setCreate(d);
-		blog.setUpdate(d);
-		blog.setSource("Tumblr");
-		blog.setSourceUrl(post.select(sourceUrlXPath).attr("href"));
-		blog.setTags(post.select(tagsXPath).text());
-		blog.setAuthor("Hao Liu");
+    private Blog parsePost(Element post) {
+        Blog blog = new Blog();
+        blog.setSubject(post.select(subjectXPath).text());
+        blog.setResources(new HashMap<String, NoteResource>());
+        blog.setContent(parseContent(post.select(contentXPath), blog.getResources()));
+        String d = dateUtil.converTumblrDate(post.select(dateXPath).text());
+        blog.setCreate(d);
+        blog.setUpdate(d);
+        blog.setSource("Tumblr");
+        blog.setSourceUrl(post.select(sourceUrlXPath).attr("href"));
+        blog.setTags(post.select(tagsXPath).text());
+        blog.setAuthor("Hao Liu");
 
-		if (blog.getSubject().isEmpty())
-			blog.setSubject("Title");
+        if (blog.getSubject().isEmpty())
+            blog.setSubject("Title");
 
         return blog;
-	}
+    }
 
-	private String parseContent(Elements content, HashMap<String, NoteResource> resMap) {
-		StringBuilder rtn = new StringBuilder("");
-		Element e = content.get(0);
-		if (content.size() == 1) {
-			switch (e.className()) {
-			case "content text":
-				rtn.append(StringEscapeUtils.escapeXml10(e.select("div.go").text()));
-				rtn.append(parseText(e, resMap));
-				break;
-			case "content image":
-				rtn.append(StringEscapeUtils.escapeXml10(e.select("div.description").text()));
-				rtn.append(parseImage(e, "a[rel]", resMap));
-				break;
-			case "content video":
-				rtn.append(StringEscapeUtils.escapeXml10(e.select("div.description").text()));
-                String a = e.select("a[src]").text();
-				rtn.append(parseImage(parseIFrame(e.select("iframe").attr("src"), "div.photoset").first(),
-                        "a.photoset_photo", resMap));
-				break;
-			case "content audio":
-				rtn.append("content audio");
-				break;
-			case "content chat":
-				rtn.append("content chat");
-				break;
-			case "content link":
-				rtn.append("content link");
-				break;
-			case "content quote":
-				rtn.append("content quote");
-				break;
-			default:
-				rtn.append("Error");
-				break;
-			}
-		}
-		return rtn.toString();
-	}
+    private String parseContent(Elements content, HashMap<String, NoteResource> resMap) {
+        StringBuilder rtn = new StringBuilder("");
+        Element e = content.get(0);
+        if (content.size() == 1) {
+            switch (e.className()) {
+                case "content text":
+                    rtn.append(StringEscapeUtils.escapeXml10(e.select("div.go").text()));
+                    rtn.append(parseText(e, resMap));
+                    break;
+                case "content image":
+                    rtn.append(StringEscapeUtils.escapeXml10(e.select("div.description").text()));
+                    rtn.append(parseImage(e, "a[rel]", resMap));
+                    break;
+                case "content video":
+                    rtn.append(StringEscapeUtils.escapeXml10(e.select("div.description").text()));
 
-	private String parseText(Element e, HashMap<String, NoteResource> resMap) {
-		StringBuilder resContent = new StringBuilder("");
-		if (e.select("div.go").size() == 1) {
-			Element allElement = e.select("div.go").get(0);
-			Elements imageElement = allElement.select("figure");
-			if (imageElement.size() > 0) {
+                    Element imageElement = parseIFrame(e.select("iframe").attr("src"), "div.photoset").first();
+                    if (imageElement != null)
+                        rtn.append(parseImage(imageElement, "a.photoset_photo", resMap));
+                    else {
+                        Element videoElement = parseIFrame(e.select("iframe.tumblr_video_iframe").attr("src"), "video.crt-video").first();
+                        if (videoElement != null)
+                            rtn.append(parseVideo(videoElement, "source", resMap));
+                    }
+                    break;
+                case "content audio":
+                    rtn.append("content audio");
+                    break;
+                case "content chat":
+                    rtn.append("content chat");
+                    break;
+                case "content link":
+                    rtn.append("content link");
+                    break;
+                case "content quote":
+                    rtn.append("content quote");
+                    break;
+                default:
+                    rtn.append("Error");
+                    break;
+            }
+        }
+        return rtn.toString();
+    }
 
-				for (Element img : imageElement) {
-					NoteResource res = new NoteResource();
-					res.setWidth(img.select("img").attr("width"));
-					res.setHeight(img.select("img").attr("height"));
-					res.setMimeType(extractFileExtension(img.select("img").attr("src")));
-					byte[] imgBinData = null;
-					res.setSourceUrl(img.select("img").attr("src"));
-					try {
-						imgBinData = fetchRemoteFile(res.getSourceUrl());
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-					if (imgBinData != null) {
-						res.setData(base64Encode(imgBinData));
-						res.setFileHashcode(calculateResourceHash(imgBinData));
-					}
-					resMap.put(res.getFileHashcode(), res);
-					resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res
+    private String parseText(Element e, HashMap<String, NoteResource> resMap) {
+        StringBuilder resContent = new StringBuilder("");
+        if (e.select("div.go").size() == 1) {
+            Element allElement = e.select("div.go").get(0);
+            Elements imageElement = allElement.select("figure");
+            if (imageElement.size() > 0) {
+
+                for (Element img : imageElement) {
+                    NoteResource res = new NoteResource();
+                    res.setWidth(img.select("img").attr("width"));
+                    res.setHeight(img.select("img").attr("height"));
+                    res.setMimeType(extractFileExtension(img.select("img").attr("src")));
+                    byte[] imgBinData = null;
+                    res.setSourceUrl(img.select("img").attr("src"));
+                    try {
+                        imgBinData = fetchRemoteFile(res.getSourceUrl());
+                    } catch (Exception e1) {
+                        e1.printStackTrace();
+                    }
+                    if (imgBinData != null) {
+                        res.setData(base64Encode(imgBinData));
+                        res.setFileHashcode(calculateResourceHash(imgBinData));
+                    }
+                    resMap.put(res.getFileHashcode(), res);
+                    resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res
                             .getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res.getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
-				}
-			}
-		}
-		return resContent.toString();
-	}
+                }
+            }
+        }
+        return resContent.toString();
+    }
 
-	private String parseImage(Element e, String pattern, HashMap<String, NoteResource> resMap) {
-		StringBuilder resContent = new StringBuilder("");
-		Elements imageElements = e.select(pattern);
-		for(Element imageElement : imageElements) {
+    private String parseImage(Element e, String pattern, HashMap<String, NoteResource> resMap) {
+        StringBuilder resContent = new StringBuilder("");
+        Elements imageElements = e.select(pattern);
+        for (Element imageElement : imageElements) {
             if (imageElement != null) {
                 NoteResource res = new NoteResource();
-                res.setMimeType(extractFileExtension(imageElement.attr("href")));
+                res.setMimeType("image/" + extractFileExtension(imageElement.attr("href")));
                 byte[] imgBinData = null;
                 res.setSourceUrl(imageElement.attr("href"));
                 try {
@@ -240,79 +246,108 @@ public class ImportTumblrPostData {
                         .getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
             }
         }
-		return resContent.toString();
-	}
+        return resContent.toString();
+    }
 
-	private Elements parseIFrame(String url, String pattern) {
-		Document html = null;
-		try {
-			html = Jsoup.connect(url).get();
-		} catch (IOException e) {
-			logger.catching(e);
-			logger.error(
-					"no protocol is specified, or an unknown protocol is found, or iFrame url is null.");
-		}
-		Elements resource = html.select(pattern);
-		return resource;
-	}
+    private String parseVideo(Element e, String pattern, HashMap<String, NoteResource> resMap) {
+        StringBuilder resContent = new StringBuilder("");
+        Element videoElement = e.select(pattern).first();
+        if (videoElement != null) {
+            NoteResource res = new NoteResource();
+            res.setMimeType(videoElement.attr("type"));
+            byte[] videoBinData = null;
+            res.setSourceUrl(videoElement.attr("src"));
+            try {
+                videoBinData = fetchRemoteFile(res.getSourceUrl());
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+            if (videoBinData != null) {
+                res.setData(base64Encode(videoBinData));
+                res.setFileHashcode(calculateResourceHash(videoBinData));
+            }
+            resMap.put(res.getFileHashcode(), res);
+            resContent.append("<div><en-media type=\"").append(res.getMimeType()).append("\" style=\"cursor:pointer;\" height=\"43\" hash=\"").append(res.getFileHashcode()).append("\"/></div>\n");
+        }
 
-	public String extractFileExtension(String url) {
-		String[] name = url.split("\\.(?=[^\\.]+$)");
-		return name[name.length - 1];
-	}
+        return resContent.toString();
+    }
 
-	public byte[] fetchRemoteFile(String location) throws Exception {
-		URL url = new URL(location);
-		InputStream is = null;
-		byte[] bytes = null;
-		try {
-			is = url.openStream();
-			bytes = IOUtils.toByteArray(is);
-		} catch (IOException e) {
-			//handle errors
-			e.printStackTrace();
-		} finally {
-			if (is != null)
-				is.close();
-		}
-		return bytes;
-	}
+    private Elements parseIFrame(String url, String pattern) {
+        Document html = null;
+        Elements resource = null;
+        try {
+            if(url != null) {
+                url = url.replace("https", "http");
+                html = Jsoup.connect(url).get();
+            }
+        } catch (IOException e) {
+            logger.catching(e);
+            logger.error(
+                    "no protocol is specified, or an unknown protocol is found, or iFrame url is null.");
+        }
+        if(html != null)
+            resource = html.select(pattern);
+        return resource;
+    }
 
-	public String calculateResourceHash(byte[] content) {
-		MessageDigest md = null;
-		try {
-			md = MessageDigest.getInstance("MD5");
+    public String extractFileExtension(String url) {
+        String[] name = url.split("\\.(?=[^\\.]+$)");
+        return name[name.length - 1];
+    }
 
-			md.update(content);
-			byte byteData[] = md.digest();
+    public byte[] fetchRemoteFile(String location) throws Exception {
+        URL url = new URL(location);
+        InputStream is = null;
+        byte[] bytes = null;
+        try {
+            is = url.openStream();
+            bytes = IOUtils.toByteArray(is);
+        } catch (IOException e) {
+            //handle errors
+            e.printStackTrace();
+        } finally {
+            if (is != null)
+                is.close();
+        }
+        return bytes;
+    }
 
-			//convert the byte to hex format method 1
-			StringBuilder sb = new StringBuilder();
-			for (byte aByteData : byteData) {
-				sb.append(Integer.toString((aByteData & 0xff) + 0x100, 16).substring(1));
-			}
+    public String calculateResourceHash(byte[] content) {
+        MessageDigest md = null;
+        try {
+            md = MessageDigest.getInstance("MD5");
 
-			System.out.println("Digest(in hex format):: " + sb.toString());
+            md.update(content);
+            byte byteData[] = md.digest();
 
-			//convert the byte to hex format method 2
-			StringBuilder hexString = new StringBuilder();
-			for (byte aByteData : byteData) {
-				String hex = Integer.toHexString(0xff & aByteData);
-				if (hex.length() == 1)
-					hexString.append('0');
-				hexString.append(hex);
-			}
-			System.out.println("Digest(in hex format):: " + hexString.toString());
+            //convert the byte to hex format method 1
+            StringBuilder sb = new StringBuilder();
+            for (byte aByteData : byteData) {
+                sb.append(Integer.toString((aByteData & 0xff) + 0x100, 16).substring(1));
+            }
 
-			return sb.toString();
-		} catch (NoSuchAlgorithmException e) {
-			e.printStackTrace();
-		}
-		return null;
-	}
+            System.out.println("Digest(in hex format):: " + sb.toString());
 
-	public String base64Encode(byte[] content) {
-		Base64 coder = new Base64();
-		return coder.encodeToString(content);
-	}
+            //convert the byte to hex format method 2
+            StringBuilder hexString = new StringBuilder();
+            for (byte aByteData : byteData) {
+                String hex = Integer.toHexString(0xff & aByteData);
+                if (hex.length() == 1)
+                    hexString.append('0');
+                hexString.append(hex);
+            }
+            System.out.println("Digest(in hex format):: " + hexString.toString());
+
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public String base64Encode(byte[] content) {
+        Base64 coder = new Base64();
+        return coder.encodeToString(content);
+    }
 }
