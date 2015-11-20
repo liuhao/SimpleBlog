@@ -148,13 +148,13 @@ public class ImportTumblrPostData {
                 case "content video":
                     rtn.append(StringEscapeUtils.escapeXml10(e.select("div.description").text()));
 
-                    Element imageElement = parseIFrame(e.select("iframe").attr("src"), "div.photoset").first();
-                    if (imageElement != null)
-                        rtn.append(parseImage(imageElement, "a.photoset_photo", resMap));
+                    Elements imageElements = parseIFrame(e.select("iframe.photoset").attr("src"), "div.photoset");
+                    if (imageElements != null)
+                        rtn.append(parseImage(imageElements.first(), "a.photoset_photo", resMap));
                     else {
-                        Element videoElement = parseIFrame(e.select("iframe.tumblr_video_iframe").attr("src"), "video.crt-video").first();
-                        if (videoElement != null)
-                            rtn.append(parseVideo(videoElement, "source", resMap));
+                        Elements videoElements = parseIFrame(e.select("iframe.tumblr_video_iframe").attr("src"), "video.crt-video");
+                        if (videoElements != null)
+                            rtn.append(parseVideo(videoElements.first(), "source", resMap));
                     }
                     break;
                 case "content audio":
@@ -276,17 +276,17 @@ public class ImportTumblrPostData {
     private Elements parseIFrame(String url, String pattern) {
         Document html = null;
         Elements resource = null;
-        try {
-            if(url != null) {
+        if (!url.isEmpty()) {
+            try {
                 url = url.replace("https", "http");
                 html = Jsoup.connect(url).get();
+            } catch (IOException e) {
+                logger.catching(e);
+                logger.error(
+                        "no protocol is specified, or an unknown protocol is found, or iFrame url is null.");
             }
-        } catch (IOException e) {
-            logger.catching(e);
-            logger.error(
-                    "no protocol is specified, or an unknown protocol is found, or iFrame url is null.");
         }
-        if(html != null)
+        if (html != null)
             resource = html.select(pattern);
         return resource;
     }
