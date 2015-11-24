@@ -207,7 +207,8 @@ public class ImportTumblrPostData {
                 imageElement = allElement.select("img");
                 if (imageElement.size() > 0) {
                     for (Element img : imageElement) {
-                        parseTextPostImage(img, resMap);
+                        parseTextPostImage(img, resMap, resContent);
+
                     }
                 }
             }
@@ -215,8 +216,7 @@ public class ImportTumblrPostData {
         return resContent.toString();
     }
 
-    private String parseTextPostImage(Element img, HashMap<String, NoteResource> resMap) {
-        StringBuilder resContent = new StringBuilder("");
+    private String parseTextPostImage(Element img, HashMap<String, NoteResource> resMap, StringBuilder resContent) {
         if (img != null) {
             NoteResource res = new NoteResource();
             res.setMimeType("image/" + extractFileExtension(img.attr("src")));
