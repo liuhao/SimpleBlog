@@ -208,7 +208,6 @@ public class ImportTumblrPostData {
                 if (imageElement.size() > 0) {
                     for (Element img : imageElement) {
                         parseTextPostImage(img, resMap, resContent);
-
                     }
                 }
             }
@@ -256,38 +255,7 @@ public class ImportTumblrPostData {
         StringBuilder resContent = new StringBuilder("");
         Elements imageElements = e.select(pattern);
         for (Element imageElement : imageElements) {
-            if (imageElement != null) {
-                NoteResource res = new NoteResource();
-                res.setMimeType("image/" + extractFileExtension(imageElement.attr("href")));
-                byte[] imgBinData = null;
-                res.setSourceUrl(imageElement.attr("href"));
-                try {
-                    imgBinData = fetchRemoteFile(res.getSourceUrl());
-                } catch (Exception e1) {
-                    e1.printStackTrace();
-                }
-                if (imgBinData != null) {
-                    InputStream in = new ByteArrayInputStream(imgBinData);
-                    try {
-                        BufferedImage bImageFromConvert = ImageIO.read(in);
-                        res.setWidth(String.valueOf(bImageFromConvert.getWidth()));
-                        res.setHeight(String.valueOf(bImageFromConvert.getHeight()));
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    } finally {
-                        try {
-                            in.close();
-                        } catch (IOException e1) {
-                            e1.printStackTrace();
-                        }
-                    }
-                    res.setData(base64Encode(imgBinData));
-                    res.setFileHashcode(calculateResourceHash(imgBinData));
-                }
-                resMap.put(res.getFileHashcode(), res);
-                resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res.getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res
-                        .getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
-            }
+            parseTextPostImage(imageElement, resMap, resContent);
         }
         return resContent.toString();
     }
