@@ -187,7 +187,8 @@ public class ImportTumblrPostData {
                     NoteResource res = new NoteResource();
                     res.setWidth(img.select("img").attr("width"));
                     res.setHeight(img.select("img").attr("height"));
-                    res.setMimeType(extractFileExtension(img.select("img").attr("src")));
+                    String fileExtension = extractFileExtension(img.select("img").attr("src"));
+                    res.setMimeType("image/" + fileExtension);
                     byte[] imgBinData = null;
                     res.setSourceUrl(img.select("img").attr("src"));
                     try {
@@ -198,10 +199,11 @@ public class ImportTumblrPostData {
                     if (imgBinData != null) {
                         res.setData(base64Encode(imgBinData));
                         res.setFileHashcode(calculateResourceHash(imgBinData));
+                        res.setFileName(res.getFileHashcode() + "." + fileExtension);
                     }
                     resMap.put(res.getFileHashcode(), res);
                     resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res
-                            .getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res.getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
+                            .getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"").append(res.getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
                 }
             } else {
                 imageElement = allElement.select("img");
@@ -219,7 +221,8 @@ public class ImportTumblrPostData {
     private String parseTextPostImage(Element img, HashMap<String, NoteResource> resMap, StringBuilder resContent) {
         if (img != null) {
             NoteResource res = new NoteResource();
-            res.setMimeType("image/" + extractFileExtension(img.attr("src")));
+            String fileExtension = extractFileExtension(img.attr("src"));
+            res.setMimeType("image/" + fileExtension);
             byte[] imgBinData = null;
             res.setSourceUrl(img.attr("src"));
             try {
@@ -244,9 +247,10 @@ public class ImportTumblrPostData {
                 }
                 res.setData(base64Encode(imgBinData));
                 res.setFileHashcode(calculateResourceHash(imgBinData));
+                res.setFileName(res.getFileHashcode() + "." + fileExtension);
             }
             resMap.put(res.getFileHashcode(), res);
-            resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res.getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res
+            resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res.getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"").append(res
                     .getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
         }
         return resContent.toString();
@@ -258,7 +262,8 @@ public class ImportTumblrPostData {
         for (Element imageElement : imageElements) {
             if (imageElement != null) {
                 NoteResource res = new NoteResource();
-                res.setMimeType("image/" + extractFileExtension(imageElement.attr("href")));
+                String fileExtension = extractFileExtension(imageElement.attr("href"));
+                res.setMimeType("image/" + fileExtension);
                 byte[] imgBinData = null;
                 res.setSourceUrl(imageElement.attr("href"));
                 try {
@@ -283,9 +288,10 @@ public class ImportTumblrPostData {
                     }
                     res.setData(base64Encode(imgBinData));
                     res.setFileHashcode(calculateResourceHash(imgBinData));
+                    res.setFileName(res.getFileHashcode() + "." + fileExtension);
                 }
                 resMap.put(res.getFileHashcode(), res);
-                resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res.getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"image/").append(res
+                resContent.append("<div style=\"margin-block-start:;margin-block-end:;-moz-margin-start:;-moz-margin-end:;margin-top:0px;margin-bottom:0px;\">\n" + "\t<en-media width=\"").append(res.getWidth()).append("\" height=\"").append(res.getHeight()).append("\" alt=\"image\" hash=\"").append(res.getFileHashcode()).append("\" type=\"").append(res
                         .getMimeType()).append("\" style=\"max-width:400px;\"/>\n").append("</div>\n");
             }
         }
@@ -308,6 +314,8 @@ public class ImportTumblrPostData {
             if (videoBinData != null) {
                 res.setData(base64Encode(videoBinData));
                 res.setFileHashcode(calculateResourceHash(videoBinData));
+                String [] extension = res.getMimeType().split("/");
+                res.setFileName(res.getFileHashcode() + "." + extension[extension.length - 1]);
             }
             resMap.put(res.getFileHashcode(), res);
             resContent.append("<div><en-media type=\"").append(res.getMimeType()).append("\" style=\"cursor:pointer;\" height=\"43\" hash=\"").append(res.getFileHashcode()).append("\"/></div>\n");
@@ -391,6 +399,17 @@ public class ImportTumblrPostData {
 
     public String base64Encode(byte[] content) {
         Base64 coder = new Base64();
-        return coder.encodeToString(content);
+        StringBuilder sb = new StringBuilder("\n");
+        String code = coder.encodeToString(content);
+        /*
+        int countPlusOne = 65;
+        for (int i = 0; i < code.length(); i += countPlusOne) {
+            sb.append(code.substring(i, (i + countPlusOne) > code.length() ? code.length() : i + countPlusOne));
+            sb.append("\n");
+        }
+        return sb.toString();
+        */
+        return code;
+
     }
 }
