@@ -75,7 +75,7 @@ public class App {
         ConvertToEvernote cte = (ConvertToEvernote) context.getBean("convertToEvernote");
         ImportTumblrPostData importTumblr = (ImportTumblrPostData) context.getBean("importTumblrPostData");
         String tumblrUrl = "http://liuhao2012.tumblr.com/page/";
-        for (int i = 43; i < 44; i++) {
+        for (int i = 1; i < 76; i++) {
             System.out.println(i);
             cte.updateEnex(importTumblr.getXmlDocument(tumblrUrl + String.valueOf(i)),
                     "TumblrPostExport.enex");
