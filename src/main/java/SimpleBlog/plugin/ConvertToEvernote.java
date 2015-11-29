@@ -137,6 +137,18 @@ public class ConvertToEvernote {
         mime.setText(res.getMimeType());
         root.add(mime);
 
+        Element timeStamp = new DocumentFactory().createElement("timestamp");
+        timeStamp.setText("19700101T000000Z");
+        root.add(timeStamp);
+
+        Element recType = new DocumentFactory().createElement("reco-type");
+        recType.setText("unknown");
+        root.add(recType);
+
+        Element fileName = new DocumentFactory().createElement("file-name");
+        fileName.setText(res.getFileName());
+        root.add(fileName);
+
         if (res.getWidth() != null) {
             Element width = new DocumentFactory().createElement("width");
             width.setText(res.getWidth());
