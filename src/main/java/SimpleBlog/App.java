@@ -5,11 +5,11 @@ import SimpleBlog.plugin.ConvertToEvernote;
 import SimpleBlog.plugin.DateUtil;
 import SimpleBlog.plugin.ImportTumblrPostData;
 import SimpleBlog.plugin.YahooWeatherData;
-import org.dom4j.io.XMLWriter;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,7 +75,7 @@ public class App {
         ConvertToEvernote cte = (ConvertToEvernote) context.getBean("convertToEvernote");
         ImportTumblrPostData importTumblr = (ImportTumblrPostData) context.getBean("importTumblrPostData");
         String tumblrUrl = "http://liuhao2012.tumblr.com/page/";
-        for (int i = 1; i < 76; i++) {
+        for (int i = 39; i < 40; i++) {
             System.out.println(i);
             cte.updateEnex(importTumblr.getXmlDocument(tumblrUrl + String.valueOf(i)),
                     "TumblrPostExport.enex");

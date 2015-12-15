@@ -2,23 +2,22 @@ package SimpleBlog.plugin;
 
 import SimpleBlog.entity.Blog;
 import SimpleBlog.entity.NoteResource;
-import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.*;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
 import java.util.List;
 
 /**
+ * Convert SimpleBlog post to Evernote export XML
  * Created by lyoo on 9/25/2015.
  */
 public class ConvertToEvernote {
-    private static Logger logger = LogManager.getLogger(ConvertToEvernote.class.getName());
+    private static final Logger logger = LogManager.getLogger(ConvertToEvernote.class.getName());
     private Resource templatePath;
 
     private enum CreateType {
@@ -30,7 +29,7 @@ public class ConvertToEvernote {
         this.templatePath = templatePath;
     }
 
-    public Document exportEvernoteXml(List<Blog> blogs, CreateType type, String enexPath) {
+    private Document exportEvernoteXml(List<Blog> blogs, CreateType type, String enexPath) {
         FileInputStream fis = null;
         String preContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\"><en-note style=\"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;\">";
         String postContent = "</en-note>";
@@ -38,7 +37,7 @@ public class ConvertToEvernote {
         try {
             SAXReader saxReader = new SAXReader();
             boolean removeOnce = false;
-            Document document = null;
+            Document document;
 
             Document template = saxReader.read(templatePath.getInputStream()); // 读取XML文件,获得document对象
             Element noteTemplate = template.getRootElement().element("note").createCopy();
@@ -125,7 +124,7 @@ public class ConvertToEvernote {
         return null;
     }
 
-    public Element createResourceElm(NoteResource res) {
+    private Element createResourceElm(NoteResource res) {
         Element root = new DocumentFactory().createElement("resource");
 
         Element data = new DocumentFactory().createElement("data");
