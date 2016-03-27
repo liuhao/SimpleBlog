@@ -93,6 +93,11 @@
       <artifactId>dom4j</artifactId>
       <version>1.6.1</version>
     </dependency>
+    <dependency>
+      <groupId>jaxen</groupId>
+      <artifactId>jaxen</artifactId>
+      <version>1.1.6</version>
+    </dependency>
 
     <dependency>
       <groupId>org.jsoup</groupId>
@@ -120,6 +125,13 @@
       <artifactId>spring-data-mongodb</artifactId>
       <version>1.2.0.RELEASE</version>
     </dependency>
+
+    <dependency>
+      <groupId>com.google.oauth-client</groupId>
+      <artifactId>google-oauth-client</artifactId>
+      <version>1.21.0</version>
+    </dependency>
+
   </dependencies>
 
   <build>

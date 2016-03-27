@@ -10,7 +10,7 @@ import java.util.Calendar;
 public class DateUtil {
     public String getTextDate() {
         Calendar c = Calendar.getInstance();
-        SimpleDateFormat f = new SimpleDateFormat("yyyy.MM.dd");
+        SimpleDateFormat f = new SimpleDateFormat("yyyy.MM.dd, E.");
         return f.format(c.getTime());
     }
 

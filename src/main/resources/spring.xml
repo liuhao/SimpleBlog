@@ -12,6 +12,11 @@
               <property name="woeid" value="12697644" />
        </bean>
 
+       <bean id="openweathermapData" class="SimpleBlog.plugin.OpenWeatherMapData">
+              <property name="cityId" value="Toronto,ca" />
+              <property name="appId" value="5cfc44ed07c064acb211505b2089c55c" />
+       </bean>
+
        <bean id="convertToEvernote" class="SimpleBlog.plugin.ConvertToEvernote">
               <property name="templatePath" value="classpath:EvernoteExportTemplate.xml" />
        </bean>
