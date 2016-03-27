@@ -11,10 +11,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
+ * Get Weather Information from Yahoo Site.
  * Created by lyoo on 9/25/2015.
  */
 public class YahooWeatherData {
-    private static Logger logger = LogManager.getLogger(YahooWeatherData.class.getName());
+    private static final Logger logger = LogManager.getLogger(YahooWeatherData.class.getName());
 
     private static final String YAHOO_WEATHER_GET_URL;
 
@@ -84,7 +85,6 @@ public class YahooWeatherData {
                 Attribute city = cityElm.attribute("city");
                 tagText = " " + city.getText();
             }
-            ;
         }
         return tagText;
     }

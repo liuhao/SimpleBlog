@@ -1,16 +1,17 @@
 package SimpleBlog.entity;
 
 /**
+ * Note resource
  * Created by lyoo on 10/7/2015.
  */
 public class NoteResource {
-    String data;
-    String mimeType;
-    String fileName;
-    String fileHashcode;
-    String sourceUrl;
-    String width;
-    String height;
+    private String data;
+    private String mimeType;
+    private String fileName;
+    private String fileHashcode;
+    private String sourceUrl;
+    private String width;
+    private String height;
 
     public String getData() {
         return data;

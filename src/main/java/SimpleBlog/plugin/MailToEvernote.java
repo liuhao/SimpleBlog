@@ -10,10 +10,11 @@ import javax.mail.internet.MimeMessage;
 import java.util.Properties;
 
 /**
+ * Post note to Evernote by sending email
  * Created by lyoo on 9/27/2015.
  */
 public class MailToEvernote {
-    private static Logger logger = LogManager.getLogger(MailToEvernote.class.getName());
+    private static final Logger logger = LogManager.getLogger(MailToEvernote.class.getName());
 
     private String host;
     private String port;
