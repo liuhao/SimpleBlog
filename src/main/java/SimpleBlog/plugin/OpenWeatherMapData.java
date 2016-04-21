@@ -10,6 +10,7 @@ import org.dom4j.io.SAXReader;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.math.BigDecimal;
 
 /**
  * Created by lyoo on 3/27/2016.
@@ -64,8 +65,8 @@ public class OpenWeatherMapData {
             logger.error("the forecast element is not exist!");
         } else {
             String weather = nodeWeather.valueOf("@value");
-            String minTemp = String.valueOf(Double.valueOf(nodeTemperature.valueOf("@min")) - KELVIN);
-            String maxTemp = String.valueOf(Double.valueOf(nodeTemperature.valueOf("@max")) - KELVIN);
+            String minTemp = String.valueOf(new BigDecimal(nodeTemperature.valueOf("@min")).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue() - KELVIN);
+            String maxTemp = String.valueOf(new BigDecimal(nodeTemperature.valueOf("@max")).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue() - KELVIN);
             weatherText = weather + " " + minTemp + "℃~" + maxTemp + "℃";
             return weatherText;
         }
