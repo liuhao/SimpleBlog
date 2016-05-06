@@ -65,8 +65,8 @@ public class OpenWeatherMapData {
             logger.error("the forecast element is not exist!");
         } else {
             String weather = nodeWeather.valueOf("@value");
-            String minTemp = String.valueOf(new BigDecimal(nodeTemperature.valueOf("@min")).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue() - KELVIN);
-            String maxTemp = String.valueOf(new BigDecimal(nodeTemperature.valueOf("@max")).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue() - KELVIN);
+            String minTemp = String.valueOf(new BigDecimal(Double.valueOf(nodeTemperature.valueOf("@min")) - KELVIN).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue());
+            String maxTemp = String.valueOf(new BigDecimal(Double.valueOf(nodeTemperature.valueOf("@max")) - KELVIN).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue());
             weatherText = weather + " " + minTemp + "℃~" + maxTemp + "℃";
             return weatherText;
         }
