@@ -23,7 +23,10 @@ public class App {
                 tumblrImport(context);
                 break;
             case "new":
-                newNote(context);
+                newExportFile(context);
+                break;
+            case "mail":
+                sendMail(context);
                 break;
             default:
                 System.out.println("java -cp Blog-1.0-SNAPSHOT.jar SimpleBlog.App [ new | tumblr ]");
@@ -40,25 +43,35 @@ public class App {
 */
     }
 
-    private static void newNote(ApplicationContext context) {
-        ConvertToEvernote cte = (ConvertToEvernote) context.getBean("convertToEvernote");
-        //YahooWeatherData data = (YahooWeatherData) context.getBean("yahooData");
-        OpenWeatherMapData data = (OpenWeatherMapData) context.getBean("openweathermapData");
-
-        DateUtil date = (DateUtil) context.getBean("dateUtil");
+    private static Blog newNote(WeatherData data, DateUtil date) {
         Blog blog = new Blog();
-
         blog.setAuthor("Hao Liu");
         blog.setSubject(date.getTextDate() + " " + data.getWeather() + " " + data.getLocation());
         blog.setContent("What a wonderful day. 美好的一天。");
         blog.setCreate(date.getEvernoteDate());
         blog.setUpdate(date.getEvernoteDate());
         blog.setTags("@2016 Diary");
+        return blog;
+    }
 
-        //XMLWriter writer = new XMLWriter(new OutputStreamWriter(System.out, "UTF-8"));
-        //writer.write(cte.exportEvernoteXml(blog));
-        //writer.close();
+    private static void sendMail(ApplicationContext context) {
+        ConvertToEvernote cte = (ConvertToEvernote) context.getBean("convertToEvernote");
+        //YahooWeatherData data = (YahooWeatherData) context.getBean("yahooData");
+        OpenWeatherMapData data = (OpenWeatherMapData) context.getBean("openweathermapData");
+        DateUtil date = (DateUtil) context.getBean("dateUtil");
+        MailToEvernote mailToEvernote = (MailToEvernote) context.getBean("mailToEvernote");
+        Blog blog = newNote(data, date);
 
+        mailToEvernote.send(blog);
+    }
+
+    private static void newExportFile(ApplicationContext context) {
+        ConvertToEvernote cte = (ConvertToEvernote) context.getBean("convertToEvernote");
+        //YahooWeatherData data = (YahooWeatherData) context.getBean("yahooData");
+        OpenWeatherMapData data = (OpenWeatherMapData) context.getBean("openweathermapData");
+        DateUtil date = (DateUtil) context.getBean("dateUtil");
+
+        Blog blog = newNote(data, date);
         List<Blog> blogs = new ArrayList<Blog>();
         blogs.add(blog);
 

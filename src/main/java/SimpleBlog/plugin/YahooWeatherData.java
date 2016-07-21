@@ -14,7 +14,7 @@ import java.net.URL;
  * Get Weather Information from Yahoo Site.
  * Created by lyoo on 9/25/2015.
  */
-public class YahooWeatherData {
+public class YahooWeatherData implements WeatherData {
     private static final Logger logger = LogManager.getLogger(YahooWeatherData.class.getName());
 
     private static final String YAHOO_WEATHER_GET_URL;

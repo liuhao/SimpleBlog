@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 /**
  * Created by lyoo on 3/27/2016.
  */
-public class OpenWeatherMapData {
+public class OpenWeatherMapData implements WeatherData {
     private static Logger logger = LogManager.getLogger(OpenWeatherMapData.class.getName());
 
     private static final String OPENWEATHERMAP_GET_URL;
