@@ -13,6 +13,7 @@ import java.net.URL;
 import java.math.BigDecimal;
 
 /**
+ * OpenWeatherAPI
  * Created by lyoo on 3/27/2016.
  */
 public class OpenWeatherMapData implements WeatherData {
@@ -22,7 +23,7 @@ public class OpenWeatherMapData implements WeatherData {
     private static final double KELVIN = 273.15;
 
     static {
-        OPENWEATHERMAP_GET_URL = "http://api.openweathermap.org/data/2.5/find";
+        OPENWEATHERMAP_GET_URL = "http://api.openweathermap.org/data/2.5/weather";
     }
 
     private String cityId;
@@ -65,8 +66,14 @@ public class OpenWeatherMapData implements WeatherData {
             logger.error("the forecast element is not exist!");
         } else {
             String weather = nodeWeather.valueOf("@value");
-            String minTemp = String.valueOf(new BigDecimal(Double.valueOf(nodeTemperature.valueOf("@min")) - KELVIN).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue());
-            String maxTemp = String.valueOf(new BigDecimal(Double.valueOf(nodeTemperature.valueOf("@max")) - KELVIN).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue());
+            String minTemp = "?";
+            if (!nodeTemperature.valueOf("@min").isEmpty()) {
+                minTemp = String.valueOf(new BigDecimal(Double.valueOf(nodeTemperature.valueOf("@min")) - KELVIN).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue());
+            }
+            String maxTemp = "?";
+            if (!nodeTemperature.valueOf("@max").isEmpty()) {
+                maxTemp = String.valueOf(new BigDecimal(Double.valueOf(nodeTemperature.valueOf("@max")) - KELVIN).setScale(2, BigDecimal.ROUND_HALF_EVEN).doubleValue());
+            }
             weatherText = weather + " " + minTemp + "℃~" + maxTemp + "℃";
             return weatherText;
         }
@@ -80,7 +87,9 @@ public class OpenWeatherMapData implements WeatherData {
             getXmlDocument();
         }
         Node nodeCity = payloadDocument.selectSingleNode("//city");
-        tagText = " " + nodeCity.valueOf("@name");
+        if (!nodeCity.valueOf("@name").isEmpty()) {
+            tagText = " " + nodeCity.valueOf("@name");
+        }
         return tagText;
     }
 }
