@@ -26,7 +26,7 @@
               <property name="port" value="465" />
               <property name="mailbox" value="liuhao_note.1e6ce@m.evernote.com" />
               <property name="username" value="toevernote@163.com" />
-              <property name="password" value="Frontier.123" />
+           <property name="password" value="LiuHao123"/>
        </bean>
 
        <bean id="importTumblrPostData" class="SimpleBlog.plugin.ImportTumblrPostData">
