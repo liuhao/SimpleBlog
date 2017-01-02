@@ -50,7 +50,7 @@ public class App {
         blog.setContent("What a wonderful day. 美好的一天。");
         blog.setCreate(date.getEvernoteDate());
         blog.setUpdate(date.getEvernoteDate());
-        blog.setTags("@2016 Diary");
+        blog.setTags("@2017 Diary");
         return blog;
     }
 
