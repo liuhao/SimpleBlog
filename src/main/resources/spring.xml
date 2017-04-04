@@ -27,7 +27,7 @@
               <property name="mailbox" value="liuhao_note.1e6ce@m.evernote.com" />
               <property name="username" value="toevernote@163.com" />
            	  <property name="password" value="tao123"/>
-           	  <property name="sendgrid_api_key" value="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"/>
+           	  <property name="sendgridApiKey" value="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"/>
        </bean>
 
        <bean id="importTumblrPostData" class="SimpleBlog.plugin.ImportTumblrPostData">
