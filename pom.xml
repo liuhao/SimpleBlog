@@ -132,11 +132,17 @@
       <version>1.21.0</version>
     </dependency>
 
-	<dependency>
-    	<groupId>com.sendgrid</groupId>
+    <dependency>
+        <groupId>com.sendgrid</groupId>
     	<artifactId>sendgrid-java</artifactId>
     	<version>3.2.0</version>
-	</dependency>
+    </dependency>
+
+    <dependency>
+        <groupId>org.apache.httpcomponents</groupId>
+        <artifactId>httpclient</artifactId>
+        <version>4.5.3</version>
+    </dependency>
 
   </dependencies>
 
