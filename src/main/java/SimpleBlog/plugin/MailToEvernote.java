@@ -93,7 +93,7 @@ public class MailToEvernote {
 		Content content = new Content("text/plain", blog.getContent());
 
 		Mail mail = new Mail(from, subject, to, content);
-		SendGrid sg = new SendGrid(sendgridApiKey);
+		SendGrid sg = new SendGrid(System.getenv(sendgridApiKey));
 		Request request = new Request();
 		try {
 			request.method = Method.POST;
