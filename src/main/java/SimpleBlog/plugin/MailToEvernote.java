@@ -57,10 +57,10 @@ public class MailToEvernote {
 		logger.entry();
 		System.setProperty("mail.mime.charset", "UTF-8");
 		Properties props = new Properties();
-		props.put("mail.smtp.host", host);
+		props.put("mail.smtp.host", System.getenv(host));
 		props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 		props.put("mail.smtp.auth", true);
-		props.put("mail.smtp.port", port);
+		props.put("mail.smtp.port", System.getenv(port));
 		String user = System.getenv(username);
 		String pwd = System.getenv(password);
 		Session session = Session.getInstance(props, new javax.mail.Authenticator() {
@@ -73,7 +73,8 @@ public class MailToEvernote {
 		try {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(user));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(mailbox));
+			message.setRecipients(Message.RecipientType.TO,
+				InternetAddress.parse(System.getenv(mailbox)));
 			message.setSubject(blog.getSubject() + " " + blog.getTags());
 			message.setText(blog.getContent());
 			Transport.send(message);
@@ -90,7 +91,7 @@ public class MailToEvernote {
 
 		Email from = new Email(System.getenv(username));
 		String subject = blog.getSubject() + " " + blog.getTags();
-		Email to = new Email(mailbox);
+		Email to = new Email(System.getenv(mailbox));
 		Content content = new Content("text/plain", blog.getContent());
 
 		Mail mail = new Mail(from, subject, to, content);
