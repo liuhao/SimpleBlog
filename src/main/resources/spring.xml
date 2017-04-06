@@ -22,11 +22,11 @@
        </bean>
 
        <bean id="mailToEvernote" class="SimpleBlog.plugin.MailToEvernote">
-              <property name="host" value="smtp.qq.com" />
-              <property name="port" value="465" />
+              <property name="host" value="in.mailjet.com" />
+              <property name="port" value="2525" />
               <property name="mailbox" value="liuhao_note.1e6ce@m.evernote.com" />
-              <property name="username" value="2695892105@qq.com" />
-              <property name="password" value="ftryyurckgigdhcc"/>
+              <property name="username" value="USER" />
+              <property name="password" value="PWD"/>
               <property name="sendgridApiKey" value="SENDGRID_API_KEY"/>
        </bean>
 
