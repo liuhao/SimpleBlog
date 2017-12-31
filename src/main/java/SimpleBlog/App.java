@@ -3,6 +3,7 @@ package SimpleBlog;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.springframework.context.ApplicationContext;
@@ -16,7 +17,7 @@ import SimpleBlog.plugin.*;
  */
 public class App {
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		ApplicationContext context;
 		context = new ClassPathXmlApplicationContext("spring.xml");
 		String arg = args.length > 0 ? args[0] : "";
@@ -55,7 +56,8 @@ public class App {
 		blog.setContent("What a wonderful day. 美好的一天。");
 		blog.setCreate(date.getEvernoteDate());
 		blog.setUpdate(date.getEvernoteDate());
-		blog.setTags("@2017 Diary");
+		String tags = "@" + Calendar.getInstance().get(Calendar.YEAR) + " Diary";
+		blog.setTags(tags);
 		return blog;
 	}
 
@@ -91,7 +93,7 @@ public class App {
 		DateUtil date = (DateUtil) context.getBean("dateUtil");
 
 		Blog blog = newNote(data, date);
-		List<Blog> blogs = new ArrayList<Blog>();
+		List<Blog> blogs = new ArrayList<>();
 		blogs.add(blog);
 
 		if (new File("./NewExport.enex").exists()) {
