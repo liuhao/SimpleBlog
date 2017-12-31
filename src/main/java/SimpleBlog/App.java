@@ -56,7 +56,7 @@ public class App {
 		blog.setContent("What a wonderful day. 美好的一天。");
 		blog.setCreate(date.getEvernoteDate());
 		blog.setUpdate(date.getEvernoteDate());
-		String tags = "@" + Calendar.getInstance().get(Calendar.YEAR) + " Diary";
+        String tags = "@" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + " Diary";
 		blog.setTags(tags);
 		return blog;
 	}
