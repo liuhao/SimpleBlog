@@ -1,8 +1,9 @@
 package SimpleBlog.plugin;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 /**
  * Date utilities
@@ -10,28 +11,23 @@ import java.util.Calendar;
  */
 public class DateUtil {
     public String getTextDate() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat f = new SimpleDateFormat("yyyy.MM.dd, E.");
-        return f.format(c.getTime());
+        LocalDate localDate = LocalDate.now();
+        return localDate.format(DateTimeFormatter.ofPattern("yyyy.MM.dd, E."));
     }
 
     public String getEvernoteDate() {
-        Calendar c = Calendar.getInstance();
-        SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
-        return f.format(c.getTime());
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
     }
 
-    public String converTumblrDate(String date) {
+    String converTumblrDate(String date) {
         if (date.isEmpty())
             return "";
-        Calendar c = Calendar.getInstance();
         String dateString = date.replaceFirst("(^[0-9]+)[a-zA-Z]+ ", "$1 ");
-        SimpleDateFormat sdf = new SimpleDateFormat("d MMMM yyyy HH:mm:ss");
-        SimpleDateFormat f = new SimpleDateFormat("yyyyMMdd'T'HHmmss'Z'");
         try {
-            c.setTime(sdf.parse(dateString + " 14:09:59"));
-            return f.format(c.getTime());
-        } catch (ParseException e) {
+            LocalDateTime localDateTime = LocalDateTime.parse(dateString + " 14:09:59", DateTimeFormatter.ofPattern("d MMMM yyyy HH:mm:ss"));
+            return localDateTime.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
+        } catch (DateTimeParseException e) {
             e.printStackTrace();
         }
         return null;

@@ -4,13 +4,19 @@ import SimpleBlog.entity.Blog;
 import SimpleBlog.entity.NoteResource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dom4j.*;
+import org.dom4j.Document;
+import org.dom4j.DocumentException;
+import org.dom4j.DocumentFactory;
+import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.core.io.Resource;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Convert SimpleBlog post to Evernote export XML
@@ -30,7 +36,7 @@ public class ConvertToEvernote {
     }
 
     private Document exportEvernoteXml(List<Blog> blogs, CreateType type, String enexPath) {
-        FileInputStream fis = null;
+        FileInputStream fis;
         String preContent = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\"><en-note style=\"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;\">";
         String postContent = "</en-note>";
 
@@ -44,7 +50,7 @@ public class ConvertToEvernote {
 
             if (type == CreateType.UPDATE) {
                 try {
-                    fis = new FileInputStream(enexPath);
+                    fis = new FileInputStream(Optional.ofNullable(enexPath).orElse("NewExport.enex"));
                     document = saxReader.read(fis);
                 } catch (FileNotFoundException | DocumentException e) {
                     //logger.catching(e);
@@ -67,7 +73,8 @@ public class ConvertToEvernote {
                         exportElm.remove(exportElm.element("note"));
                     }
 
-                    for (Blog blog : blogs) {
+                    List<Blog> checkedBlogs = Optional.ofNullable(blogs).orElse(new ArrayList<>());
+                    for (Blog blog : checkedBlogs) {
                         Element note = noteTemplate.createCopy();
                         Element titleElm = note.element("title");
                         if (titleElm == null) {
@@ -112,14 +119,6 @@ public class ConvertToEvernote {
         } catch (Exception e) {
             logger.catching(e);
             logger.error("SAXRead error");
-        } finally {
-            if (fis != null) {
-                try {
-                    fis.close();
-                } catch (IOException e) {
-                    logger.error("将文件[" + enexPath + "]转换成Document,输入流关闭异常", e);
-                }
-            }
         }
         return null;
     }
@@ -175,7 +174,7 @@ public class ConvertToEvernote {
     public void createEnex(List<Blog> blogs, String enexPath) {
         XMLWriter writer;
         try {
-            writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), "UTF-8"));
+            writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), StandardCharsets.UTF_8));
             writer.setEscapeText(true);
             writer.write(exportEvernoteXml(blogs, CreateType.CREATE, enexPath)); //输出到文件
             writer.close();
@@ -188,10 +187,12 @@ public class ConvertToEvernote {
         XMLWriter writer;
         try {
             Document document = exportEvernoteXml(blogs, CreateType.UPDATE, enexPath);
-            writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), "UTF-8"));
-            writer.setEscapeText(true);
-            writer.write(document); // update file到文件
-            writer.close();
+            if (null != document) {
+                writer = new XMLWriter(new OutputStreamWriter(new FileOutputStream(enexPath), StandardCharsets.UTF_8));
+                writer.setEscapeText(true);
+                writer.write(document); // update file到文件
+                writer.close();
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }

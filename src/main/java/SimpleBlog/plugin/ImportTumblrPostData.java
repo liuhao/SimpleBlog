@@ -2,8 +2,8 @@ package SimpleBlog.plugin;
 
 import SimpleBlog.entity.Blog;
 import SimpleBlog.entity.NoteResource;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.codec.binary.Base64;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,7 +14,9 @@ import org.jsoup.select.Elements;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -74,8 +76,8 @@ public class ImportTumblrPostData {
         this.dateXPath = dateXPath;
     }
 
-    public void setDateUtil(DateUtil dateUtil) {
-        this.dateUtil = dateUtil;
+    public void setDateUtil(DateUtil dateUtil1) {
+        this.dateUtil = dateUtil1;
     }
 
     public List<Blog> getXmlDocument(String tumblrUrl) {
@@ -83,7 +85,7 @@ public class ImportTumblrPostData {
             tumblrUrl = TUMBLR_POST_DATA_GET_URL;
 
         try {
-            List<Blog> blogs = new ArrayList<Blog>();
+            List<Blog> blogs = new ArrayList<>();
             Document doc = Jsoup.connect(tumblrUrl).get();
             Elements posts = doc.select(postsXPath);
             String albumName = doc.select(albumXPath).text();
@@ -115,7 +117,7 @@ public class ImportTumblrPostData {
     private Blog parsePost(Element post) {
         Blog blog = new Blog();
         blog.setSubject(post.select(subjectXPath).text());
-        blog.setResources(new HashMap<String, NoteResource>());
+        blog.setResources(new HashMap<>());
         blog.setContent(parseContent(post.select(contentXPath), blog.getResources()));
         String d = dateUtil.converTumblrDate(post.select(dateXPath).text());
         blog.setCreate(d);
@@ -132,7 +134,7 @@ public class ImportTumblrPostData {
     }
 
     private String parseContent(Elements content, HashMap<String, NoteResource> resMap) {
-        StringBuilder rtn = new StringBuilder("");
+        StringBuilder rtn = new StringBuilder();
         Element e = content.get(0);
         if (content.size() == 1) {
             switch (e.className()) {
@@ -177,7 +179,7 @@ public class ImportTumblrPostData {
     }
 
     private String parseText(Element e, HashMap<String, NoteResource> resMap) {
-        StringBuilder resContent = new StringBuilder("");
+        StringBuilder resContent = new StringBuilder();
         if (e.select("div.go").size() == 1) {
             Element allElement = e.select("div.go").get(0);
             Elements imageElement = allElement.select("figure");
@@ -237,7 +239,7 @@ public class ImportTumblrPostData {
     }
 
     private String parseImage(Element e, String pattern, HashMap<String, NoteResource> resMap) {
-        StringBuilder resContent = new StringBuilder("");
+        StringBuilder resContent = new StringBuilder();
         Elements imageElements = e.select(pattern);
         for (Element imageElement : imageElements) {
             parseTextPostImage(imageElement, "href", resMap, resContent);
@@ -268,7 +270,7 @@ public class ImportTumblrPostData {
     }
 
     private String parseVideo(Element e, String pattern, HashMap<String, NoteResource> resMap) {
-        StringBuilder resContent = new StringBuilder("");
+        StringBuilder resContent = new StringBuilder();
         Element videoElement = e.select(pattern).first();
         if (videoElement != null) {
             NoteResource res = new NoteResource();
@@ -318,7 +320,7 @@ public class ImportTumblrPostData {
 
     private byte[] fetchRemoteFile(String location) throws Exception {
         URL url = new URL(location);
-        InputStream is = null;
+        InputStream is;
         byte[] bytes = null;
         try {
             is = url.openStream();
@@ -326,9 +328,6 @@ public class ImportTumblrPostData {
         } catch (IOException e) {
             //handle errors
             e.printStackTrace();
-        } finally {
-            if (is != null)
-                is.close();
         }
         return bytes;
     }
@@ -339,7 +338,7 @@ public class ImportTumblrPostData {
             md = MessageDigest.getInstance("MD5");
 
             md.update(content);
-            byte byteData[] = md.digest();
+            byte[] byteData = md.digest();
 
             //convert the byte to hex format method 1
             StringBuilder sb = new StringBuilder();
