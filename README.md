@@ -8,3 +8,4 @@ It will send daily email to your evernote account with a subject/title of follow
 * support smtp server and sendgrid service
 * support OpenWeatherMap service and YahooWeatherApi
 * deploy on server or desktop, doesn't need web server
+* support EverNote document format
