@@ -1,16 +1,15 @@
 package SimpleBlog;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-
+import SimpleBlog.entity.Blog;
+import SimpleBlog.plugin.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import SimpleBlog.entity.Blog;
-import SimpleBlog.plugin.*;
+import java.io.File;
+import java.time.LocalDate;
+import java.time.temporal.ChronoField;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Hello world!
@@ -35,7 +34,7 @@ public class App {
 			sendMailAPI(context);
 			break;
 		default:
-			System.out.println("java -cp Blog-1.0-SNAPSHOT.jar SimpleBlog.App [ new | tumblr ]");
+			System.out.println("java -cp Blog-1.0-SNAPSHOT.jar SimpleBlog.App [ new | tumblr | mail | mailAPI ]");
 			break;
 		}
 
@@ -56,7 +55,7 @@ public class App {
 		blog.setContent("What a wonderful day. 美好的一天。");
 		blog.setCreate(date.getEvernoteDate());
 		blog.setUpdate(date.getEvernoteDate());
-        String tags = "@" + String.valueOf(Calendar.getInstance().get(Calendar.YEAR)) + " Diary";
+		String tags = "@" + LocalDate.now().get(ChronoField.YEAR) + " Diary";
 		blog.setTags(tags);
 		return blog;
 	}
@@ -110,7 +109,7 @@ public class App {
 		String tumblrUrl = "http://liuhao2012.tumblr.com/page/";
 		for (int i = 40; i < 41; i++) {
 			System.out.println(i);
-			cte.updateEnex(importTumblr.getXmlDocument(tumblrUrl + String.valueOf(i)),
+			cte.updateEnex(importTumblr.getXmlDocument(tumblrUrl + i),
 				"TumblrPostExport.enex");
 		}
 	}
