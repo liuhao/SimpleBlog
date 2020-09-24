@@ -27,7 +27,10 @@
               <property name="mailbox" value="MAIL_EVERNOTE" />
               <property name="username" value="MAIL_USER" />
               <property name="password" value="MAIL_PWD"/>
-              <property name="sendgridApiKey" value="SENDGRID_API_KEY"/>
+              <property name="mailgunApiKey" value="MAILGUN_API_KEY"/>
+              <property name="mailgunApiHost" value="MAILGUN_API_HOST"/>
+              <property name="mailgunApiUrl" value="MAILGUN_API_URL"/>
+              <property name="mailgunApiSender" value="MAILGUN_API_SENDER"/>
        </bean>
 
        <bean id="importTumblrPostData" class="SimpleBlog.plugin.ImportTumblrPostData">
