@@ -118,16 +118,17 @@ public class MailToEvernote {
     public boolean sendByAPI(Blog blog) {
         logger.entry();
 
-        String from = this.mailgunApiSender;
+        String from = System.getenv(mailgunApiSender);
         String subject = blog.getSubject() + " " + blog.getTags();
         String to = System.getenv(mailbox);
         String content = blog.getContent();
 
         final BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(new AuthScope(this.mailgunApiHost, 443), new UsernamePasswordCredentials("api", this.mailgunApiKey.toCharArray()));
+        credsProvider.setCredentials(new AuthScope(System.getenv(mailgunApiHost), 443),
+                new UsernamePasswordCredentials("api", System.getenv(mailgunApiKey).toCharArray()));
 
         try (final CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build()) {
-            final HttpPost httpPost = new HttpPost(this.mailgunApiUrl);
+            final HttpPost httpPost = new HttpPost(System.getenv(mailgunApiUrl));
             List<NameValuePair> formData = new ArrayList<>();
             formData.add(new BasicNameValuePair("from", from));
             formData.add(new BasicNameValuePair("to", to));
