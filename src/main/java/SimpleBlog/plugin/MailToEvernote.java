@@ -9,6 +9,7 @@ import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 
+import com.sendgrid.*;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
@@ -45,6 +46,7 @@ public class MailToEvernote {
     private String mailgunApiHost;
     private String mailgunApiUrl;
     private String mailgunApiSender;
+    private String sendgridApiKey;
 
     public void setPassword(String password) {
         this.password = password;
@@ -82,6 +84,10 @@ public class MailToEvernote {
         this.mailgunApiSender = mailgunApiSender;
     }
 
+    public void setSendgridApiKey(String sendgridApiKey) {
+        this.sendgridApiKey = sendgridApiKey;
+    }
+
     public boolean send(Blog blog) {
         logger.entry();
         System.setProperty("mail.mime.charset", "UTF-8");
@@ -115,7 +121,7 @@ public class MailToEvernote {
         return logger.exit(true);
     }
 
-    public boolean sendByAPI(Blog blog) {
+    public boolean sendByMailgunAPI(Blog blog) {
         logger.entry();
 
         String from = System.getenv(mailgunApiSender);
@@ -141,6 +147,33 @@ public class MailToEvernote {
             } catch (ParseException e) {
                 System.out.println("cannot parse the response's Entity");
             }
+        } catch (IOException e) {
+            logger.catching(e);
+            logger.error("Sendgrid API send mail to Evernote server failed:", e);
+            return logger.exit(false);
+        }
+        return logger.exit(true);
+    }
+
+    public boolean sendBySendgridAPI(Blog blog) {
+        logger.entry();
+
+        Email from = new Email(System.getenv(username));
+        String subject = blog.getSubject() + " " + blog.getTags();
+        Email to = new Email(System.getenv(mailbox));
+        Content content = new Content("text/plain", blog.getContent());
+
+        Mail mail = new Mail(from, subject, to, content);
+        SendGrid sg = new SendGrid(System.getenv(sendgridApiKey));
+        Request request = new Request();
+        try {
+            request.setMethod(Method.POST);
+            request.setEndpoint("mail/send");
+            request.setBody(mail.build());
+            Response response = sg.api(request);
+            System.out.println(response.getStatusCode());
+            System.out.println(response.getBody());
+            System.out.println(response.getHeaders());
         } catch (IOException e) {
             logger.catching(e);
             logger.error("Sendgrid API send mail to Evernote server failed:", e);

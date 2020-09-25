@@ -81,7 +81,7 @@ public class App {
 		MailToEvernote mailToEvernote = (MailToEvernote) context.getBean("mailToEvernote");
 		Blog blog = newNote(data, date);
 
-		mailToEvernote.sendByAPI(blog);
+		mailToEvernote.sendBySendgridAPI(blog);
 	}
 
 	private static void newExportFile(ApplicationContext context) {

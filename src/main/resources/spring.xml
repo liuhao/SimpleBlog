@@ -31,6 +31,7 @@
               <property name="mailgunApiHost" value="MAILGUN_API_HOST"/>
               <property name="mailgunApiUrl" value="MAILGUN_API_URL"/>
               <property name="mailgunApiSender" value="MAILGUN_API_SENDER"/>
+              <property name="sendgridApiKey" value="SENDGRID_API_KEY"/>
        </bean>
 
        <bean id="importTumblrPostData" class="SimpleBlog.plugin.ImportTumblrPostData">
