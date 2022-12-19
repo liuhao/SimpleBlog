@@ -29,156 +29,159 @@ import org.apache.logging.log4j.Logger;
 
 import SimpleBlog.entity.Blog;
 
-/**
- * Post note to Evernote by sending email
- * Created by lyoo on 9/27/2015.
- */
+/** Post note to Evernote by sending email Created by lyoo on 9/27/2015. */
 public class MailToEvernote {
 
-    private static final Logger logger = LogManager.getLogger(MailToEvernote.class.getName());
+  private static final Logger logger = LogManager.getLogger(MailToEvernote.class.getName());
 
-    private String host;
-    private String port;
-    private String mailbox;
-    private String username;
-    private String password;
-    private String mailgunApiKey;
-    private String mailgunApiHost;
-    private String mailgunApiUrl;
-    private String mailgunApiSender;
-    private String sendgridApiKey;
+  private String host;
+  private String port;
+  private String mailbox;
+  private String username;
+  private String password;
+  private String mailgunApiKey;
+  private String mailgunApiHost;
+  private String mailgunApiUrl;
+  private String mailgunApiSender;
+  private String sendgridApiKey;
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+  public void setPassword(String password) {
+    this.password = password;
+  }
 
-    public void setHost(String host) {
-        this.host = host;
-    }
+  public void setHost(String host) {
+    this.host = host;
+  }
 
-    public void setPort(String port) {
-        this.port = port;
-    }
+  public void setPort(String port) {
+    this.port = port;
+  }
 
-    public void setMailbox(String mailbox) {
-        this.mailbox = mailbox;
-    }
+  public void setMailbox(String mailbox) {
+    this.mailbox = mailbox;
+  }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
+  public void setUsername(String username) {
+    this.username = username;
+  }
 
-    public void setMailgunApiKey(String mailgunApiKey) {
-        this.mailgunApiKey = mailgunApiKey;
-    }
+  public void setMailgunApiKey(String mailgunApiKey) {
+    this.mailgunApiKey = mailgunApiKey;
+  }
 
-    public void setMailgunApiHost(String mailgunApiHost) {
-        this.mailgunApiHost = mailgunApiHost;
-    }
+  public void setMailgunApiHost(String mailgunApiHost) {
+    this.mailgunApiHost = mailgunApiHost;
+  }
 
-    public void setMailgunApiUrl(String mailgunApiUrl) {
-        this.mailgunApiUrl = mailgunApiUrl;
-    }
+  public void setMailgunApiUrl(String mailgunApiUrl) {
+    this.mailgunApiUrl = mailgunApiUrl;
+  }
 
-    public void setMailgunApiSender(String mailgunApiSender) {
-        this.mailgunApiSender = mailgunApiSender;
-    }
+  public void setMailgunApiSender(String mailgunApiSender) {
+    this.mailgunApiSender = mailgunApiSender;
+  }
 
-    public void setSendgridApiKey(String sendgridApiKey) {
-        this.sendgridApiKey = sendgridApiKey;
-    }
+  public void setSendgridApiKey(String sendgridApiKey) {
+    this.sendgridApiKey = sendgridApiKey;
+  }
 
-    public boolean send(Blog blog) {
-        logger.entry();
-        System.setProperty("mail.mime.charset", "UTF-8");
-        Properties props = new Properties();
-        props.put("mail.smtp.host", System.getenv(host));
-        props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
-        props.put("mail.smtp.auth", true);
-        props.put("mail.smtp.port", System.getenv(port));
-        String user = System.getenv(username);
-        String pwd = System.getenv(password);
-        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+  public boolean send(Blog blog) {
+    logger.entry();
+    System.setProperty("mail.mime.charset", "UTF-8");
+    Properties props = new Properties();
+    props.put("mail.smtp.host", System.getenv(host));
+    props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+    props.put("mail.smtp.auth", true);
+    props.put("mail.smtp.port", System.getenv(port));
+    String user = System.getenv(username);
+    String pwd = System.getenv(password);
+    Session session =
+        Session.getInstance(
+            props,
+            new javax.mail.Authenticator() {
 
-            protected PasswordAuthentication getPasswordAuthentication() {
+              protected PasswordAuthentication getPasswordAuthentication() {
                 return new PasswordAuthentication(user, pwd);
-            }
-        });
+              }
+            });
 
-        try {
-            Message message = new MimeMessage(session);
-            message.setFrom(new InternetAddress(user));
-            message.setRecipients(Message.RecipientType.TO,
-                    InternetAddress.parse(System.getenv(mailbox)));
-            message.setSubject(blog.getSubject() + " " + blog.getTags());
-            message.setText(blog.getContent());
-            Transport.send(message);
-        } catch (MessagingException e) {
-            logger.catching(e);
-            logger.error("Send mail to Evernote server failed:", e);
-            return logger.exit(false);
-        }
-        return logger.exit(true);
+    try {
+      Message message = new MimeMessage(session);
+      message.setFrom(new InternetAddress(user));
+      message.setRecipients(
+          Message.RecipientType.TO, InternetAddress.parse(System.getenv(mailbox)));
+      message.setSubject(blog.getSubject() + " " + blog.getTags());
+      message.setText(blog.getContent());
+      Transport.send(message);
+    } catch (MessagingException e) {
+      logger.catching(e);
+      logger.error("Send mail to Evernote server failed:", e);
+      return logger.exit(false);
     }
+    return logger.exit(true);
+  }
 
-    public boolean sendByMailgunAPI(Blog blog) {
-        logger.entry();
+  public boolean sendByMailgunAPI(Blog blog) {
+    logger.entry();
 
-        String from = System.getenv(mailgunApiSender);
-        String subject = blog.getSubject() + " " + blog.getTags();
-        String to = System.getenv(mailbox);
-        String content = blog.getContent();
+    String from = System.getenv(mailgunApiSender);
+    String subject = blog.getSubject() + " " + blog.getTags();
+    String to = System.getenv(mailbox);
+    String content = blog.getContent();
 
-        final BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
-        credsProvider.setCredentials(new AuthScope(System.getenv(mailgunApiHost), 443),
-                new UsernamePasswordCredentials("api", System.getenv(mailgunApiKey).toCharArray()));
+    final BasicCredentialsProvider credsProvider = new BasicCredentialsProvider();
+    credsProvider.setCredentials(
+        new AuthScope(System.getenv(mailgunApiHost), 443),
+        new UsernamePasswordCredentials("api", System.getenv(mailgunApiKey).toCharArray()));
 
-        try (final CloseableHttpClient httpClient = HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build()) {
-            final HttpPost httpPost = new HttpPost(System.getenv(mailgunApiUrl));
-            List<NameValuePair> formData = new ArrayList<>();
-            formData.add(new BasicNameValuePair("from", from));
-            formData.add(new BasicNameValuePair("to", to));
-            formData.add(new BasicNameValuePair("subject", subject));
-            formData.add(new BasicNameValuePair("text", content));
-            httpPost.setEntity(new UrlEncodedFormEntity(formData));
-            try (final CloseableHttpResponse response = httpClient.execute(httpPost)) {
-                System.out.println(response.getCode() + " " + response.getHeaders() + " " + response.getReasonPhrase());
-                System.out.println(EntityUtils.toString(response.getEntity()));
-            } catch (ParseException e) {
-                System.out.println("cannot parse the response's Entity");
-            }
-        } catch (IOException e) {
-            logger.catching(e);
-            logger.error("Sendgrid API send mail to Evernote server failed:", e);
-            return logger.exit(false);
-        }
-        return logger.exit(true);
+    try (final CloseableHttpClient httpClient =
+        HttpClients.custom().setDefaultCredentialsProvider(credsProvider).build()) {
+      final HttpPost httpPost = new HttpPost(System.getenv(mailgunApiUrl));
+      List<NameValuePair> formData = new ArrayList<>();
+      formData.add(new BasicNameValuePair("from", from));
+      formData.add(new BasicNameValuePair("to", to));
+      formData.add(new BasicNameValuePair("subject", subject));
+      formData.add(new BasicNameValuePair("text", content));
+      httpPost.setEntity(new UrlEncodedFormEntity(formData));
+      try (final CloseableHttpResponse response = httpClient.execute(httpPost)) {
+        System.out.println(
+            response.getCode() + " " + response.getHeaders() + " " + response.getReasonPhrase());
+        System.out.println(EntityUtils.toString(response.getEntity()));
+      } catch (ParseException e) {
+        System.out.println("cannot parse the response's Entity");
+      }
+    } catch (IOException e) {
+      logger.catching(e);
+      logger.error("Sendgrid API send mail to Evernote server failed:", e);
+      return logger.exit(false);
     }
+    return logger.exit(true);
+  }
 
-    public boolean sendBySendgridAPI(Blog blog) {
-        logger.entry();
+  public boolean sendBySendgridAPI(Blog blog) {
+    logger.entry();
 
-        Email from = new Email(System.getenv(username));
-        String subject = blog.getSubject() + " " + blog.getTags();
-        Email to = new Email(System.getenv(mailbox));
-        Content content = new Content("text/plain", blog.getContent());
+    Email from = new Email(System.getenv(username));
+    String subject = blog.getSubject() + " " + blog.getTags();
+    Email to = new Email(System.getenv(mailbox));
+    Content content = new Content("text/plain", blog.getContent());
 
-        Mail mail = new Mail(from, subject, to, content);
-        SendGrid sg = new SendGrid(System.getenv(sendgridApiKey));
-        Request request = new Request();
-        try {
-            request.setMethod(Method.POST);
-            request.setEndpoint("mail/send");
-            request.setBody(mail.build());
-            Response response = sg.api(request);
-            System.out.println(response.getStatusCode());
-            System.out.println(response.getBody());
-            System.out.println(response.getHeaders());
-        } catch (IOException e) {
-            logger.catching(e);
-            logger.error("Sendgrid API send mail to Evernote server failed:", e);
-            return logger.exit(false);
-        }
-        return logger.exit(true);
+    Mail mail = new Mail(from, subject, to, content);
+    SendGrid sg = new SendGrid(System.getenv(sendgridApiKey));
+    Request request = new Request();
+    try {
+      request.setMethod(Method.POST);
+      request.setEndpoint("mail/send");
+      request.setBody(mail.build());
+      Response response = sg.api(request);
+      System.out.println(response.getStatusCode());
+      System.out.println(response.getBody());
+      System.out.println(response.getHeaders());
+    } catch (IOException e) {
+      logger.catching(e);
+      logger.error("Sendgrid API send mail to Evernote server failed:", e);
+      return logger.exit(false);
     }
+    return logger.exit(true);
+  }
 }

@@ -2,49 +2,49 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-       http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+       http://www.springframework.org/schema/beans/spring-beans.xsd
        http://www.springframework.org/schema/util
        http://www.springframework.org/schema/util/spring-util.xsd">
 
-       <bean id="dateUtil" class="SimpleBlog.plugin.DateUtil" />
+  <bean id="dateUtil" class="SimpleBlog.plugin.DateUtil"/>
 
-       <bean id="yahooData" class="SimpleBlog.plugin.YahooWeatherData">
-              <property name="woeid" value="12697644" />
-       </bean>
+  <bean id="yahooData" class="SimpleBlog.plugin.YahooWeatherData">
+    <property name="woeid" value="12697644"/>
+  </bean>
 
-       <bean id="openweathermapData" class="SimpleBlog.plugin.OpenWeatherMapData">
-              <property name="cityId" value="Toronto,ca" />
-              <property name="appId" value="5cfc44ed07c064acb211505b2089c55c" />
-       </bean>
+  <bean id="openweathermapData" class="SimpleBlog.plugin.OpenWeatherMapData">
+    <property name="cityId" value="Toronto,ca"/>
+    <property name="appId" value="5cfc44ed07c064acb211505b2089c55c"/>
+  </bean>
 
-       <bean id="convertToEvernote" class="SimpleBlog.plugin.ConvertToEvernote">
-              <property name="templatePath" value="classpath:EvernoteExportTemplate.xml" />
-       </bean>
+  <bean id="convertToEvernote" class="SimpleBlog.plugin.ConvertToEvernote">
+    <property name="templatePath" value="classpath:EvernoteExportTemplate.xml"/>
+  </bean>
 
-       <bean id="mailToEvernote" class="SimpleBlog.plugin.MailToEvernote">
-              <property name="host" value="MAIL_HOST" />
-              <property name="port" value="MAIL_PORT" />
-              <property name="mailbox" value="MAIL_EVERNOTE" />
-              <property name="username" value="MAIL_USER" />
-              <property name="password" value="MAIL_PWD"/>
-              <property name="mailgunApiKey" value="MAILGUN_API_KEY"/>
-              <property name="mailgunApiHost" value="MAILGUN_API_HOST"/>
-              <property name="mailgunApiUrl" value="MAILGUN_API_URL"/>
-              <property name="mailgunApiSender" value="MAILGUN_API_SENDER"/>
-              <property name="sendgridApiKey" value="SENDGRID_API_KEY"/>
-       </bean>
+  <bean id="mailToEvernote" class="SimpleBlog.plugin.MailToEvernote">
+    <property name="host" value="MAIL_HOST"/>
+    <property name="port" value="MAIL_PORT"/>
+    <property name="mailbox" value="MAIL_EVERNOTE"/>
+    <property name="username" value="MAIL_USER"/>
+    <property name="password" value="MAIL_PWD"/>
+    <property name="mailgunApiKey" value="MAILGUN_API_KEY"/>
+    <property name="mailgunApiHost" value="MAILGUN_API_HOST"/>
+    <property name="mailgunApiUrl" value="MAILGUN_API_URL"/>
+    <property name="mailgunApiSender" value="MAILGUN_API_SENDER"/>
+    <property name="sendgridApiKey" value="SENDGRID_API_KEY"/>
+  </bean>
 
-       <bean id="importTumblrPostData" class="SimpleBlog.plugin.ImportTumblrPostData">
-              <property name="albumXPath" value="div#header > h1 > a" />
-              <property name="postsXPath" value="div.post:not([style])" />
-              <property name="sourceUrlXPath" value="li.permalink > a" />
-              <property name="tagsXPath" value="p.tags" />
-              <property name="contentXPath" value="div.sidebar + div" />
-              <property name="subjectXPath" value="h3 > a" />
-              <property name="dateXPath" value="li.date > h2" />
-              <property name="dateUtil" ref="dateUtil" />
-       </bean>
+  <bean id="importTumblrPostData" class="SimpleBlog.plugin.ImportTumblrPostData">
+    <property name="albumXPath" value="div#header > h1 > a"/>
+    <property name="postsXPath" value="div.post:not([style])"/>
+    <property name="sourceUrlXPath" value="li.permalink > a"/>
+    <property name="tagsXPath" value="p.tags"/>
+    <property name="contentXPath" value="div.sidebar + div"/>
+    <property name="subjectXPath" value="h3 > a"/>
+    <property name="dateXPath" value="li.date > h2"/>
+    <property name="dateUtil" ref="dateUtil"/>
+  </bean>
 
-       <bean id="app" class="SimpleBlog.App" />
+  <bean id="app" class="SimpleBlog.App"/>
 
 </beans>

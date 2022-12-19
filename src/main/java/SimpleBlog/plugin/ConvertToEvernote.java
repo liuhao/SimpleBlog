@@ -37,7 +37,7 @@ public class ConvertToEvernote {
         "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!DOCTYPE en-note SYSTEM \"http://xml.evernote.com/pub/enml2.dtd\"><en-note style=\"word-wrap: break-word; -webkit-nbsp-mode: space; -webkit-line-break: after-white-space;\">";
     String postContent = "</en-note>";
 
-    try (InputStream tempInput = templatePath.getInputStream()){
+    try (InputStream tempInput = templatePath.getInputStream()) {
       SAXReader saxReader = new SAXReader();
       boolean removeOnce = false;
       Document document;
