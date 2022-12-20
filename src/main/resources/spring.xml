@@ -9,12 +9,12 @@
   <bean id="dateUtil" class="SimpleBlog.plugin.DateUtil"/>
 
   <bean id="yahooData" class="SimpleBlog.plugin.YahooWeatherData">
-    <property name="woeid" value="12697644"/>
+    <property name="woeid" value="YAHOOWEATHER_WOEID"/>
   </bean>
 
   <bean id="openweathermapData" class="SimpleBlog.plugin.OpenWeatherMapData">
     <property name="cityId" value="Toronto,ca"/>
-    <property name="appId" value="5cfc44ed07c064acb211505b2089c55c"/>
+    <property name="appId" value="OPENWEATHERMAP_APPID"/>
   </bean>
 
   <bean id="convertToEvernote" class="SimpleBlog.plugin.ConvertToEvernote">

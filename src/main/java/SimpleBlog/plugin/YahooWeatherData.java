@@ -27,7 +27,7 @@ public class YahooWeatherData implements WeatherData {
   }
 
   private Document getXmlDocument() {
-    String url = YAHOO_WEATHER_GET_URL + "?w=" + woeid + "&u=c";
+    String url = YAHOO_WEATHER_GET_URL + "?w=" + System.getenv(woeid) + "&u=c";
     try {
       URL getUrl = new URL(url);
       try {

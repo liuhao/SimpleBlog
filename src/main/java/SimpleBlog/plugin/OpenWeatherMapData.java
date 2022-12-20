@@ -2,15 +2,13 @@ package SimpleBlog.plugin;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.dom4j.Attribute;
 import org.dom4j.Document;
-import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.math.BigDecimal;
 
 /** OpenWeatherAPI Created by lyoo on 3/27/2016. */
 public class OpenWeatherMapData implements WeatherData {
@@ -36,7 +34,7 @@ public class OpenWeatherMapData implements WeatherData {
   }
 
   private void getXmlDocument() {
-    String url = OPENWEATHERMAP_GET_URL + "?q=" + cityId + "&unit=kelvin&mode=xml&appid=" + appId;
+    String url = OPENWEATHERMAP_GET_URL + "?q=" + cityId + "&unit=kelvin&mode=xml&appid=" + System.getenv(appId);
     try {
       URL getUrl = new URL(url);
       try {
