@@ -1,4 +1,4 @@
-package SimpleBlog.plugin;
+package simpleblog.plugin;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -67,7 +67,7 @@ public class YahooWeatherData implements WeatherData {
   }
 
   public String getLocation() {
-    logger.entry();
+    logger.traceEntry();
     String tagText = "unknown";
     Document document = getXmlDocument();
 

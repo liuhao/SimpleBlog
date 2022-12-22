@@ -1,8 +1,8 @@
-package SimpleBlog.entity;
+package simpleblog.entity;
 
 import java.util.HashMap;
 
-/** SimpleBlog post entity Created by lyoo on 9/25/2015. */
+/** simpleblog post entity Created by lyoo on 9/25/2015. */
 public class Blog {
   private String subject;
   private String content;

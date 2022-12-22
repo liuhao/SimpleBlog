@@ -1,10 +1,10 @@
-package SimpleBlog.plugin;
+package simpleblog.plugin;
 
-import SimpleBlog.entity.Blog;
-import SimpleBlog.entity.NoteResource;
+import simpleblog.entity.Blog;
+import simpleblog.entity.NoteResource;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.text.StringEscapeUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-/** Convert Tumblr Post to SimpleBlog Post. Created by lyoo on 9/28/2015. */
+/** Convert Tumblr Post to simpleblog Post. Created by lyoo on 9/28/2015. */
 public class ImportTumblrPostData {
 
   private static final Logger logger = LogManager.getLogger(ImportTumblrPostData.class.getName());

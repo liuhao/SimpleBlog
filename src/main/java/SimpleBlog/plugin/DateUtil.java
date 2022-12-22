@@ -1,4 +1,4 @@
-package SimpleBlog.plugin;
+package simpleblog.plugin;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

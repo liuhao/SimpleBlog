@@ -1,4 +1,4 @@
-package SimpleBlog.plugin;
+package simpleblog.plugin;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,8 +7,10 @@ import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Optional;
 
 /** OpenWeatherAPI Created by lyoo on 3/27/2016. */
 public class OpenWeatherMapData implements WeatherData {
@@ -33,8 +35,17 @@ public class OpenWeatherMapData implements WeatherData {
     this.appId = appId;
   }
 
+  public void setPayloadDocument(Document dataDocument) {
+    this.payloadDocument = dataDocument;
+  }
+
   private void getXmlDocument() {
-    String url = OPENWEATHERMAP_GET_URL + "?q=" + cityId + "&unit=kelvin&mode=xml&appid=" + System.getenv(appId);
+    String url =
+        OPENWEATHERMAP_GET_URL
+            + "?q="
+            + cityId
+            + "&unit=kelvin&mode=xml&appid="
+            + Optional.ofNullable(System.getenv(appId)).orElse("undefined");
     try {
       URL getUrl = new URL(url);
       try {
@@ -66,7 +77,7 @@ public class OpenWeatherMapData implements WeatherData {
         minTemp =
             String.valueOf(
                 new BigDecimal(Double.valueOf(nodeTemperature.valueOf("@min")) - KELVIN)
-                    .setScale(2, BigDecimal.ROUND_HALF_EVEN)
+                    .setScale(2, RoundingMode.HALF_EVEN)
                     .doubleValue());
       }
       String maxTemp = "?";
@@ -74,7 +85,7 @@ public class OpenWeatherMapData implements WeatherData {
         maxTemp =
             String.valueOf(
                 new BigDecimal(Double.valueOf(nodeTemperature.valueOf("@max")) - KELVIN)
-                    .setScale(2, BigDecimal.ROUND_HALF_EVEN)
+                    .setScale(2, RoundingMode.HALF_EVEN)
                     .doubleValue());
       }
       weatherText = weather + " " + minTemp + "℃~" + maxTemp + "℃";
@@ -84,7 +95,7 @@ public class OpenWeatherMapData implements WeatherData {
   }
 
   public String getLocation() {
-    logger.entry();
+    logger.traceEntry();
     String tagText = "unknown";
     if (null == payloadDocument) {
       getXmlDocument();

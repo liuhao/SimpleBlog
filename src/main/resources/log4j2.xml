@@ -9,16 +9,16 @@
     </Console>
   </Appenders>
   <Loggers>
-    <Logger name="SimpleBlog.App" level="debug">
+    <Logger name="simpleblog.App" level="debug">
       <AppenderRef ref="SimpleBlog"/>
     </Logger>
-    <Logger name="SimpleBlog.plugin.ConvertToEvernote" level="debug">
+    <Logger name="simpleblog.plugin.ConvertToEvernote" level="debug">
       <AppenderRef ref="SimpleBlog"/>
     </Logger>
-    <Logger name="SimpleBlog.plugin.YahooWeatherData" level="debug">
+    <Logger name="simpleblog.plugin.YahooWeatherData" level="debug">
       <AppenderRef ref="SimpleBlog"/>
     </Logger>
-    <Logger name="SimpleBlog.plugin.MailToEvernote" level="trace">
+    <Logger name="simpleblog.plugin.MailToEvernote" level="trace">
       <AppenderRef ref="SimpleBlog"/>
     </Logger>
     <Root level="debug">

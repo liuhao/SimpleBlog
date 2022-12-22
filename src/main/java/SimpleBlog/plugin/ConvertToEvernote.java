@@ -1,7 +1,7 @@
-package SimpleBlog.plugin;
+package simpleblog.plugin;
 
-import SimpleBlog.entity.Blog;
-import SimpleBlog.entity.NoteResource;
+import simpleblog.entity.Blog;
+import simpleblog.entity.NoteResource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.dom4j.Document;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/** Convert SimpleBlog post to Evernote export XML Created by lyoo on 9/25/2015. */
+/** Convert simpleblog post to Evernote export XML Created by lyoo on 9/25/2015. */
 public class ConvertToEvernote {
   private static final Logger logger = LogManager.getLogger(ConvertToEvernote.class.getName());
   private Resource templatePath;
@@ -38,7 +38,7 @@ public class ConvertToEvernote {
     String postContent = "</en-note>";
 
     try (InputStream tempInput = templatePath.getInputStream()) {
-      SAXReader saxReader = new SAXReader();
+      SAXReader saxReader = new SAXReader(true);
       boolean removeOnce = false;
       Document document;
 

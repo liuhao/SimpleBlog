@@ -1,7 +1,7 @@
-package SimpleBlog;
+package simpleblog;
 
-import SimpleBlog.entity.Blog;
-import SimpleBlog.plugin.*;
+import simpleblog.entity.Blog;
+import simpleblog.plugin.*;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
@@ -33,7 +33,7 @@ public class App {
         break;
       default:
         System.out.println(
-            "java -cp Blog-1.0-SNAPSHOT.jar SimpleBlog.App [ new | tumblr | mail | mailAPI ]");
+            "java -cp Blog-1.0-SNAPSHOT.jar simpleblog.App [ new | tumblr | mail | mailAPI ]");
         break;
     }
 

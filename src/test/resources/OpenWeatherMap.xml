@@ -1,0 +1,22 @@
+<current>
+  <city id="6167865" name="Toronto">
+    <coord lon="-79.4163" lat="43.7001"/>
+    <country>CA</country>
+    <timezone>-18000</timezone>
+    <sun rise="2022-12-20T12:47:40" set="2022-12-20T21:42:53"/>
+  </city>
+  <temperature value="272.92" min="271.68" max="273.95" unit="kelvin"/>
+  <feels_like value="268.88" unit="kelvin"/>
+  <humidity value="68" unit="%"/>
+  <pressure value="1029" unit="hPa"/>
+  <wind>
+    <speed value="3.6" unit="m/s" name="Gentle Breeze"/>
+    <gusts/>
+    <direction value="200" code="SSW" name="South-southwest"/>
+  </wind>
+  <clouds value="100" name="overcast clouds"/>
+  <visibility value="10000"/>
+  <precipitation mode="no"/>
+  <weather number="804" value="overcast clouds" icon="04d"/>
+  <lastupdate value="2022-12-20T19:21:55"/>
+</current>

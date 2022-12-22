@@ -1,4 +1,4 @@
-package SimpleBlog.entity;
+package simpleblog.entity;
 
 /** Note resource Created by lyoo on 10/7/2015. */
 public class NoteResource {

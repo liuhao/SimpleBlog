@@ -1,33 +1,29 @@
-package SimpleBlog.plugin;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Properties;
-
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
+package simpleblog.plugin;
 
 import com.sendgrid.*;
+import org.apache.hc.client5.http.auth.AuthScope;
 import org.apache.hc.client5.http.auth.UsernamePasswordCredentials;
 import org.apache.hc.client5.http.classic.methods.HttpPost;
 import org.apache.hc.client5.http.entity.UrlEncodedFormEntity;
+import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.HttpEntity;
 import org.apache.hc.core5.http.NameValuePair;
 import org.apache.hc.core5.http.ParseException;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.apache.hc.core5.http.message.BasicNameValuePair;
-import org.apache.hc.client5.http.impl.auth.BasicCredentialsProvider;
-import org.apache.hc.client5.http.auth.AuthScope;
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import simpleblog.entity.Blog;
 
-import SimpleBlog.entity.Blog;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Properties;
 
 /** Post note to Evernote by sending email Created by lyoo on 9/27/2015. */
 public class MailToEvernote {
@@ -86,7 +82,7 @@ public class MailToEvernote {
   }
 
   public boolean send(Blog blog) {
-    logger.entry();
+    logger.traceEntry();
     System.setProperty("mail.mime.charset", "UTF-8");
     Properties props = new Properties();
     props.put("mail.smtp.host", System.getenv(host));
@@ -116,13 +112,13 @@ public class MailToEvernote {
     } catch (MessagingException e) {
       logger.catching(e);
       logger.error("Send mail to Evernote server failed:", e);
-      return logger.exit(false);
+      return logger.traceExit(false);
     }
-    return logger.exit(true);
+    return logger.traceExit(true);
   }
 
   public boolean sendByMailgunAPI(Blog blog) {
-    logger.entry();
+    logger.traceEntry();
 
     String from = System.getenv(mailgunApiSender);
     String subject = blog.getSubject() + " " + blog.getTags();
@@ -153,13 +149,13 @@ public class MailToEvernote {
     } catch (IOException e) {
       logger.catching(e);
       logger.error("Sendgrid API send mail to Evernote server failed:", e);
-      return logger.exit(false);
+      return logger.traceExit(false);
     }
-    return logger.exit(true);
+    return logger.traceExit(true);
   }
 
   public boolean sendBySendgridAPI(Blog blog) {
-    logger.entry();
+    logger.traceEntry();
 
     Email from = new Email(System.getenv(username));
     String subject = blog.getSubject() + " " + blog.getTags();
@@ -180,8 +176,8 @@ public class MailToEvernote {
     } catch (IOException e) {
       logger.catching(e);
       logger.error("Sendgrid API send mail to Evernote server failed:", e);
-      return logger.exit(false);
+      return logger.traceExit(false);
     }
-    return logger.exit(true);
+    return logger.traceExit(true);
   }
 }
