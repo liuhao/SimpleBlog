@@ -1,5 +1,5 @@
 # SimpleBlog
-If you write diary everyday, then this is an app for you.
+If you write diary every day, then this is an app for you.
 It will send daily email to your evernote account with a subject/title of following format:
 
 *2019.02.21, Thu. overcast clouds 2.0℃~3.0℃  Toronto*
