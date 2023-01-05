@@ -1,28 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration>
-    <Appenders>
-        <File name="SimpleBlog" fileName="SimpleBlog.log" append="true">
-            <PatternLayout pattern="%d{ISO8601} %t %-5p %c{2} - %m%n" charset="utf-8"/>
-        </File>
-        <Console name="STDOUT" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" charset="utf-8"/>
-        </Console>
-    </Appenders>
-    <Loggers>
-        <Logger name="SimpleBlog.App" level="debug">
-            <AppenderRef ref="SimpleBlog"/>
-        </Logger>
-        <Logger name="SimpleBlog.plugin.ConvertToEvernote" level="debug">
-            <AppenderRef ref="SimpleBlog"/>
-        </Logger>
-        <Logger name="SimpleBlog.plugin.YahooWeatherData" level="debug">
-            <AppenderRef ref="SimpleBlog"/>
-        </Logger>
-        <Logger name="SimpleBlog.plugin.MailToEvernote" level="trace">
-            <AppenderRef ref="SimpleBlog"/>
-        </Logger>
-        <Root level="debug">
-            <AppenderRef ref="STDOUT"/>
-        </Root>
-    </Loggers>
+  <Appenders>
+    <File name="SimpleBlog" fileName="SimpleBlog.log" append="true">
+      <PatternLayout pattern="%d{ISO8601} %t %-5p %c{2} - %m%n" charset="utf-8"/>
+    </File>
+    <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d %-5p [%t] %C{2} (%F:%L) - %m%n" charset="utf-8"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Logger name="simpleblog.App" level="debug">
+      <AppenderRef ref="SimpleBlog"/>
+    </Logger>
+    <Logger name="simpleblog.plugin.ConvertToEvernote" level="debug">
+      <AppenderRef ref="SimpleBlog"/>
+    </Logger>
+    <Logger name="simpleblog.plugin.YahooWeatherData" level="debug">
+      <AppenderRef ref="SimpleBlog"/>
+    </Logger>
+    <Logger name="simpleblog.plugin.MailToEvernote" level="trace">
+      <AppenderRef ref="SimpleBlog"/>
+    </Logger>
+    <Root level="debug">
+      <AppenderRef ref="STDOUT"/>
+    </Root>
+  </Loggers>
 </Configuration>

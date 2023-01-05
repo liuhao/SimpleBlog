@@ -1,4 +1,7 @@
 .idea
 *.iml
-target
+target/
 *.log
+build/
+.DS_Store
+.gradle/
